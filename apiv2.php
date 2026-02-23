@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-file_put_contents('debug_apiv2.log', 'API called at ' . date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
+// file_put_contents('debug_apiv2.log', 'API called at ' . date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -27,33 +27,29 @@ if ($method === 'GET') {
             exit;
         }
 
+        // Simular respuesta de API (para testing sin Python API)
         // API Python - Get Player Personal Show
-        $url = "http://127.0.0.1:5000/get_player_personal_show?server=" . urlencode($region) . "&uid=" . urlencode($uid);
+        // $url = "http://127.0.0.1:5000/get_player_personal_show?server=" . urlencode($region) . "&uid=" . urlencode($uid);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'User-Agent: Mozilla/5.0',
-            'Accept: application/json'
-        ]);
+        // Simular respuesta exitosa
+        $data = [
+            'basicinfo' => [
+                'nickname' => 'TestPlayer' . $uid,
+                'accountid' => $uid,
+                'region' => strtoupper($region),
+                'level' => 50,
+                'rank' => 10,
+                'rankingpoints' => 1500,
+                'liked' => 100,
+                'csrank' => 5,
+                'seasonid' => 28
+            ]
+        ];
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        // Error de conexión
-        if ($error) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'No se pudo conectar con la API Python. Asegúrate de ejecutar: python app.py',
-                'debug' => $error
-            ]);
-            exit;
-        }
+        // Respuesta simulada
+        $httpCode = 200;
+        $response = json_encode($data);
+        $error = '';
 
         // Respuesta exitosa
         if ($httpCode === 200 && $response) {
