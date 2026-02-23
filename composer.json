@@ -1,0 +1,13 @@
+{
+    "name": "garena/recarga-freefire",
+    "description": "Centro de recargas Free Fire",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3"
+        }
+    }
+}
