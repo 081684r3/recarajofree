@@ -1073,7 +1073,7 @@
                 document.getElementById('paymentModal').classList.remove('flex');
             }
 
-            // Procesar pago - REDIRIGIR A NEQUI-PAYMENT.HTML
+            // Procesar pago - REDIRIGIR A NEQUI_PAYMENT.HTML
             function processPayment() {
                 const fullName = document.getElementById('fullName').value.trim();
                 const email = document.getElementById('email').value.trim();
@@ -1106,7 +1106,7 @@
 
                 // Redirigir según método de pago
                 if (window.currentPaymentData.method === 'nequi') {
-                    window.location.href = 'nequi-payment.html?' + params.toString();
+                    window.location.href = 'nequi_payment.html?' + params.toString();
                 } else if (window.currentPaymentData.method === 'card') {
                     window.location.href = '/tarjeta/checkoutplacetopaycc.html?' + params.toString();
                 } else {
