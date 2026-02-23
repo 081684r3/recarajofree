@@ -1,9 +1,3 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-file_put_contents('debug.log', 'Page loaded at ' . date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
-echo 'Debug: PHP is working<br>';
-?>
 <!DOCTYPE html>
 <html lang="es" class="dark">
 
