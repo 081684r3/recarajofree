@@ -27,27 +27,23 @@ if ($method === 'GET') {
             exit;
         }
 
-        // Simular respuesta de API (para testing sin Python API)
-        // API Python - Get Player Personal Show
-        // $url = "http://127.0.0.1:5000/get_player_personal_show?server=" . urlencode($region) . "&uid=" . urlencode($uid);
+        // Llamar a la API Python - Get Player Personal Show
+        $url = "http://localhost:5000/get_player_personal_show?server=" . urlencode($region) . "&uid=" . urlencode($uid);
 
-        // Simular respuesta exitosa
-        $data = [
-            'basicinfo' => [
-                'nickname' => 'TestPlayer' . $uid,
-                'accountid' => $uid,
-                'region' => strtoupper($region),
-                'level' => 50,
-                'rank' => 10,
-                'rankingpoints' => 1500,
-                'liked' => 100,
-                'csrank' => 5,
-                'seasonid' => 28
-            ]
-        ];
+        // Hacer la llamada HTTP a la API Flask
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Accept: application/json',
+            'User-Agent: PHP-API-Client/1.0'
+        ]);
 
-        // Respuesta simulada
-        $httpCode = 200;
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
         $response = json_encode($data);
         $error = '';
 
@@ -105,7 +101,7 @@ if ($method === 'GET') {
         'status' => 'API funcionando',
         'timestamp' => date('Y-m-d H:i:s'),
         'version' => '2.1',
-        'python_server' => 'http://127.0.0.1:5000',
+        'python_server' => 'http://localhost:5000',
         'endpoints' => [
             'verify' => '/api.php?action=verify&id={UID}&region={ind|br|sg|us}'
         ]
