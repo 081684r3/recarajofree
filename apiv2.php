@@ -27,7 +27,7 @@ if ($method === 'GET') {
             exit;
         }
 
-        // Llamar a la API Python - Get Player Personal Show
+        // Llamar a la API Python a través del proxy interno
         $url = "http://localhost:5000/get_player_personal_show?server=" . urlencode($region) . "&uid=" . urlencode($uid);
 
         // Hacer la llamada HTTP a la API Flask
@@ -101,7 +101,7 @@ if ($method === 'GET') {
         'status' => 'API funcionando',
         'timestamp' => date('Y-m-d H:i:s'),
         'version' => '2.1',
-        'python_server' => 'http://localhost:5000',
+        'python_server' => 'internal (localhost:5000)',
         'endpoints' => [
             'verify' => '/api.php?action=verify&id={UID}&region={ind|br|sg|us}'
         ]
