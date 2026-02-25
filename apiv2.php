@@ -44,8 +44,6 @@ if ($method === 'GET') {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
         curl_close($ch);
-        $response = json_encode($data);
-        $error = '';
 
         // Respuesta exitosa
         if ($httpCode === 200 && $response) {
