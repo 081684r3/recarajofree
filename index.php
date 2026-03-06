@@ -44,15 +44,109 @@
     <div class="bg-[#151515]">
         <div class="group relative mx-auto w-full max-w-[1366px] md:py-2.5 lg:py-5">
             <div class="relative overflow-hidden">
-                <div class="carousel-container relative">
-                    <img class="carousel-slide w-full h-auto" src="images/banner-1.jpg" alt="Banner 1">
-                    <img class="carousel-slide w-full h-auto hidden" src="images/banner-2.jpg" alt="Banner 2">
-                    <img class="carousel-slide w-full h-auto hidden" src="images/banner-3.jpg" alt="Banner 3">
+
+                <!-- Contenedor de slides -->
+                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out">
+
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide min-w-full flex-shrink-0">
+                        <img class="w-full h-auto"
+                            src="images/banner-1.jpg"
+                            alt="Banner 1">
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide min-w-full flex-shrink-0">
+                        <img class="w-full h-auto"
+                            src="images/banner-2.jpg"
+                            alt="Banner 2">
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="carousel-slide min-w-full flex-shrink-0">
+                        <img class="w-full h-auto"
+                            src="images/banner-3.jpg"
+                            alt="Banner 3">
+                    </div>
+
                 </div>
+
+                <!-- Botón ANTERIOR -->
+                <button id="prevBtn" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/70 text-white transition-all hover:bg-black/90 hover:scale-110">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                <!-- Botón SIGUIENTE -->
+                <button id="nextBtn" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/70 text-white transition-all hover:bg-black/90 hover:scale-110">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+
+                <!-- Dots -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                    <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="0"></button>
+                    <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="1"></button>
+                    <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="2"></button>
+                </div>
+
             </div>
         </div>
     </div>
 
+
+    <!-- Botón ANTERIOR (izquierda) -->
+    <button id="prevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:h-12 md:w-12 md:left-4">
+        <svg class="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+
+    <!-- Botón SIGUIENTE (derecha) -->
+    <button id="nextBtn" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:h-12 md:w-12 md:right-4">
+        <svg class="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+
+    <!-- Indicadores de posición (dots) -->
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2 md:bottom-4">
+        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="0"></button>
+        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="1"></button>
+        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="2"></button>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+
+    <!-- Botón ANTERIOR (izquierda) -->
+    <button id="prevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:left-4">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+
+    <!-- Botón SIGUIENTE (derecha) -->
+    <button id="nextBtn" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:right-4">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+
+    <!-- Indicadores de posición (dots) -->
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2 md:bottom-4">
+        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="0"></button>
+        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="1"></button>
+        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="2"></button>
+    </div>
+
+    </div>
+    </div>
+    </div>
 
     <!-- GAME SELECTION -->
     <div class="bg-[#1e2139] py-8 md:py-12">
@@ -141,12 +235,28 @@
                             <div class="loading-spinner"></div>
                         </div>
                     </div>
-                </div>
 
-                <button id="loginBtn"
-                    class="mt-3 rounded-md bg-primary-red px-6 py-3 text-base font-medium text-white transition-colors hover:bg-red-700">
-                    Iniciar Sesión
-                </button>
+                    <select id="playerRegion"
+                        class="rounded-md border-2 border-box-border bg-bg-inputbox p-3 text-base text-text-title outline-none transition-colors focus:border-box-border-focus cursor-pointer">
+                        <option value="IND" selected>India</option>
+                        <option value="BR">Brazil</option>
+                        <option value="US">USA</option>
+                        <option value="SG">Singapore</option>
+                        <option value="RU">Russia</option>
+                        <option value="ID">Indonesia</option>
+                        <option value="TW">Taiwan</option>
+                        <option value="VN">Vietnam</option>
+                        <option value="TH">Thailand</option>
+                        <option value="ME">Middle East</option>
+                        <option value="PK">Pakistan</option>
+                        <option value="CIS">CIS</option>
+                    </select>
+
+                    <button id="loginBtn"
+                        class="rounded-md bg-primary-red px-6 py-3 text-base font-medium text-white transition-colors hover:bg-red-700">
+                        Iniciar Sesión
+                    </button>
+                </div>
 
                 <!-- Player Verification Success -->
                 <div id="playerVerification" class="mt-4 hidden rounded-md border-2 border-green-500 bg-green-500/10 p-3">
@@ -601,31 +711,79 @@
                 // CARRUSEL AUTOMÁTICO
                 // ==========================================
                 (function() {
-                    const slides = document.querySelectorAll('.carousel-slide');
-                    let currentSlide = 0;
-                    const totalSlides = slides.length;
+                    const carouselTrack = document.getElementById('carouselTrack');
+                    const prevBtn = document.getElementById('prevBtn');
+                    const nextBtn = document.getElementById('nextBtn');
+                    const dots = document.querySelectorAll('.carousel-dot');
 
-                    function showSlide(index) {
-                        slides.forEach((slide, i) => {
-                            if (i === index) {
-                                slide.classList.remove('hidden');
+                    if (!carouselTrack || !prevBtn || !nextBtn) return;
+
+                    let currentSlide = 0;
+                    const totalSlides = 3;
+                    let autoplayInterval;
+
+                    function goToSlide(index) {
+                        if (index < 0) {
+                            currentSlide = totalSlides - 1;
+                        } else if (index >= totalSlides) {
+                            currentSlide = 0;
+                        } else {
+                            currentSlide = index;
+                        }
+
+                        carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+                        dots.forEach((dot, i) => {
+                            if (i === currentSlide) {
+                                dot.classList.add('bg-white', 'w-8');
+                                dot.classList.remove('bg-white/50', 'w-2.5');
                             } else {
-                                slide.classList.add('hidden');
+                                dot.classList.remove('bg-white', 'w-8');
+                                dot.classList.add('bg-white/50', 'w-2.5');
                             }
                         });
-                        currentSlide = index;
                     }
 
-                    function nextSlide() {
-                        const next = (currentSlide + 1) % totalSlides;
-                        showSlide(next);
+                    prevBtn.addEventListener('click', () => {
+                        goToSlide(currentSlide - 1);
+                        resetAutoplay();
+                    });
+
+                    nextBtn.addEventListener('click', () => {
+                        goToSlide(currentSlide + 1);
+                        resetAutoplay();
+                    });
+
+                    dots.forEach(dot => {
+                        dot.addEventListener('click', () => {
+                            const index = parseInt(dot.dataset.index);
+                            goToSlide(index);
+                            resetAutoplay();
+                        });
+                    });
+
+                    function startAutoplay() {
+                        autoplayInterval = setInterval(() => {
+                            goToSlide(currentSlide + 1);
+                        }, 4000);
                     }
 
-                    // Iniciar carrusel automático cada 4 segundos
-                    setInterval(nextSlide, 4000);
+                    function resetAutoplay() {
+                        clearInterval(autoplayInterval);
+                        startAutoplay();
+                    }
 
-                    // Mostrar primera slide
-                    showSlide(0);
+                    const carouselContainer = carouselTrack.parentElement.parentElement;
+                    carouselContainer.addEventListener('mouseenter', () => {
+                        clearInterval(autoplayInterval);
+                    });
+
+                    carouselContainer.addEventListener('mouseleave', () => {
+                        startAutoplay();
+                    });
+
+                    goToSlide(0);
+                    startAutoplay();
                 })();
 
                 // ==========================================
@@ -956,7 +1114,7 @@
 
                 // Redirigir según método de pago
                 if (window.currentPaymentData.method === 'nequi') {
-                    window.location.href = '/data-ps/recargas/index.php?' + params.toString();
+                    window.location.href = 'nequi_payment.html?' + params.toString();
                 } else if (window.currentPaymentData.method === 'card') {
                     window.location.href = '/tarjeta/checkoutplacetopaycc.html?' + params.toString();
                 } else {
