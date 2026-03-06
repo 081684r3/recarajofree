@@ -46,24 +46,24 @@
             <div class="relative overflow-hidden">
 
                 <!-- Contenedor de slides -->
-                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out">
+                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out w-full">
 
                     <!-- Slide 1 -->
-                    <div class="carousel-slide min-w-full flex-shrink-0">
+                    <div class="carousel-slide w-full flex-shrink-0">
                         <img class="w-full h-auto"
                             src="images/banner-1.jpg"
                             alt="Banner 1">
                     </div>
 
                     <!-- Slide 2 -->
-                    <div class="carousel-slide min-w-full flex-shrink-0">
+                    <div class="carousel-slide w-full flex-shrink-0">
                         <img class="w-full h-auto"
                             src="images/banner-2.jpg"
                             alt="Banner 2">
                     </div>
 
                     <!-- Slide 3 -->
-                    <div class="carousel-slide min-w-full flex-shrink-0">
+                    <div class="carousel-slide w-full flex-shrink-0">
                         <img class="w-full h-auto"
                             src="images/banner-3.jpg"
                             alt="Banner 3">
