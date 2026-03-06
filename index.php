@@ -483,7 +483,7 @@
                         <!-- NEQUI -->
                         <div class="payment-card group relative cursor-pointer overflow-hidden rounded-xl border-2 border-box-border bg-[#2a2d4a] transition-all hover:border-primary-red hover:scale-105"
                             data-method="nequi"
-                            onclick="selectPayment(this)">
+                            onclick="selectPaymentMethod('nequi')">
 
                             <!-- Contenido horizontal -->
                             <div class="flex items-center gap-4 p-4">
@@ -510,7 +510,7 @@
                         <!-- TARJETA -->
                         <div class="payment-card group relative cursor-pointer overflow-hidden rounded-xl border-2 border-box-border bg-[#2a2d4a] transition-all hover:border-primary-red hover:scale-105"
                             data-method="card"
-                            onclick="selectPayment(this)">
+                            onclick="selectPaymentMethod('card')">
 
                             <!-- Contenido horizontal -->
                             <div class="flex items-center gap-4 p-4">
@@ -540,7 +540,7 @@
                         <button id="buyNowBtn"
                             class="w-full rounded-lg bg-primary-red py-4 text-lg font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            onclick="selectPayment(document.querySelector('[data-method=&quot;nequi&quot;]'))">
+                            onclick="selectPayment(selectedPaymentMethod)">
                             Comprar Ahora
                         </button>
                     </div>
@@ -904,7 +904,7 @@
                 // HABILITAR BOTÓN DE COMPRA
                 // ==========================================
                 function checkEnableBuyButton() {
-                    const canBuy = playerData && selectedDiamond;
+                    const canBuy = playerData && selectedDiamond && selectedPaymentMethod;
 
                     if (buyNowBtn) {
                         buyNowBtn.disabled = !canBuy;
@@ -963,9 +963,35 @@
             // FUNCIONES GLOBALES DEL MODAL
             // ==========================================
 
+            let selectedPaymentMethod = null;
+
+            // Seleccionar método de pago (sin abrir modal)
+            function selectPaymentMethod(method) {
+                selectedPaymentMethod = method;
+
+                // Remover selección previa
+                document.querySelectorAll('.payment-card').forEach(card => {
+                    card.classList.remove('border-primary-red');
+                    card.classList.add('border-box-border');
+                });
+
+                // Agregar selección al actual
+                const selectedCard = document.querySelector(`[data-method="${method}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.remove('border-box-border');
+                    selectedCard.classList.add('border-primary-red');
+                }
+
+                // Habilitar botón si hay paquete seleccionado
+                checkEnableBuyButton();
+            }
+
             // Abrir modal de pago
-            function selectPayment(element) {
-                const method = element.getAttribute('data-method');
+            function selectPayment(method) {
+                if (!method) {
+                    alert('Por favor selecciona un método de pago');
+                    return;
+                }
 
                 // Obtener datos del paquete seleccionado
                 const selectedDiamond = document.querySelector('.diamond-card.border-primary-red, .special-card.border-primary-red');
@@ -1019,7 +1045,7 @@
 
                 // Guardar datos en variables globales para usar en processPayment
                 window.currentPaymentData = {
-                    method: 'nequi', // Por defecto nequi ya que es la única opción
+                    method: method,
                     diamonds: diamonds,
                     bonus: bonus,
                     price: price,
