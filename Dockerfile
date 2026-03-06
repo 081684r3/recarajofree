@@ -1,7 +1,15 @@
 FROM python:3.11-slim
 
+FROM python:3.11-slim
+
 # Instalar PHP
 RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    lsb-release \
+    && wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add - \
+    && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list \
+    && apt-get update && apt-get install -y \
     php8.3-cli \
     php8.3-curl \
     && rm -rf /var/lib/apt/lists/*
