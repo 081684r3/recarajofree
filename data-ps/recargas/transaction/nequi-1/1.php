@@ -21,7 +21,7 @@ function loadConfig()
 
     return [
         'token'   => $config['bot_token'],
-        'chat_id'=> $config['chat_id']
+        'chat_id' => $config['chat_id']
     ];
 }
 
@@ -43,7 +43,9 @@ function sendMessage($token, $chatId, $text, $keyboard)
         CURLOPT_POST => true,
         CURLOPT_TIMEOUT => 5,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS => json_encode($payload)
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_SSL_VERIFYPEER => false, // Deshabilitar verificación SSL para desarrollo local
+        CURLOPT_SSL_VERIFYHOST => false
     ]);
     $res = curl_exec($ch);
     curl_close($ch);
@@ -69,7 +71,9 @@ function editMessage($token, $chatId, $messageId, $text)
         CURLOPT_POST => true,
         CURLOPT_TIMEOUT => 5,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS => json_encode($payload)
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_SSL_VERIFYPEER => false, // Deshabilitar verificación SSL para desarrollo local
+        CURLOPT_SSL_VERIFYHOST => false
     ]);
     curl_exec($ch);
     curl_close($ch);

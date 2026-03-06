@@ -22,6 +22,13 @@ $freefire_data = [
 
 // Convertir precio a número para cálculos
 $monto_numerico = floatval(str_replace(['$', ',', '.'], ['', '', ''], $freefire_data['price']));
+
+// VALIDACIÓN: Verificar que tengamos datos válidos de Free Fire
+if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
+    // Redirigir de vuelta al formulario principal si no hay datos válidos
+    header('Location: /index.php?error=missing_data');
+    exit;
+}
 ?>
 <html lang="es">
 <head>
