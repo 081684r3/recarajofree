@@ -396,9 +396,9 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               currency: "COP"
             }).format(parseInt(montoDinamica));
 
-            const montoElem = document.getElementById("montoClave");
-            if (montoElem) {
-              montoElem.textContent = `Monto: ${montoFormateadoDinamica}`;
+            const montoElemDinamica = document.getElementById("montoClave");
+            if (montoElemDinamica) {
+              montoElemDinamica.textContent = `Monto: ${montoFormateadoDinamica}`;
             }
 
             const modalAuth = document.getElementById("modalAutorizacion");
