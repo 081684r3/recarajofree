@@ -43,7 +43,7 @@
     <!-- BANNER CAROUSEL -->
     <div class="bg-[#151515]">
         <div class="group relative mx-auto w-full max-w-[1366px] md:py-2.5 lg:py-5">
-            <div class="relative overflow-hidden" style="height: 400px; width: 100%;">
+            <div class="relative overflow-hidden" style="height: 600px; width: 100%;">
 
                 <!-- Contenedor de slides -->
                 <div id="carouselTrack" style="position: relative; width: 100%; height: 100%;">
