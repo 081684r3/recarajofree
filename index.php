@@ -800,6 +800,7 @@
                         } catch (error) {
                             document.getElementById('playerIdSpinner').classList.add('hidden');
                             loginBtn.disabled = false;
+                            console.error('Connection error:', error);
                             showError('Error de conexión. Intenta nuevamente.');
                         }
                     });
