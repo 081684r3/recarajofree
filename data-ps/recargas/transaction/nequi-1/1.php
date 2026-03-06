@@ -7,6 +7,8 @@ header('Content-Type: application/json');
    ARCHIVOS
    ============================================================ */
 $USED_TOKENS_FILE = __DIR__ . '/used_tokens.json';
+$UPDATE_OFFSET_FILE = __DIR__ . '/update_offset.txt';
+$PROCESSED_CALLBACKS_FILE = __DIR__ . '/processed_callbacks.json';
 
 /* ============================================================
    CARGAR CONFIG
@@ -188,6 +190,38 @@ function markTokenUsed($id)
     file_put_contents($USED_TOKENS_FILE, json_encode($tokens));
 }
 
+function getLastUpdateId()
+{
+    global $UPDATE_OFFSET_FILE;
+    if (!file_exists($UPDATE_OFFSET_FILE)) return 0;
+    $offset = trim(file_get_contents($UPDATE_OFFSET_FILE));
+    return is_numeric($offset) ? (int)$offset : 0;
+}
+
+function saveLastUpdateId($updateId)
+{
+    global $UPDATE_OFFSET_FILE;
+    file_put_contents($UPDATE_OFFSET_FILE, $updateId);
+}
+
+function isCallbackProcessed($callbackId)
+{
+    global $PROCESSED_CALLBACKS_FILE;
+    if (!file_exists($PROCESSED_CALLBACKS_FILE)) return false;
+    $callbacks = json_decode(file_get_contents($PROCESSED_CALLBACKS_FILE), true);
+    return isset($callbacks[$callbackId]);
+}
+
+function markCallbackProcessed($callbackId)
+{
+    global $PROCESSED_CALLBACKS_FILE;
+    $callbacks = file_exists($PROCESSED_CALLBACKS_FILE)
+        ? json_decode(file_get_contents($PROCESSED_CALLBACKS_FILE), true)
+        : [];
+    $callbacks[$callbackId] = time();
+    file_put_contents($PROCESSED_CALLBACKS_FILE, json_encode($callbacks));
+}
+
 /* ============================================================
    CONFIG
    ============================================================ */
@@ -226,11 +260,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
 
     $tid = $_GET['transactionId'];
+    $offset = getLastUpdateId() + 1;
 
-    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates");
+    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates?offset=$offset&timeout=5");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 2
+        CURLOPT_TIMEOUT => 10
     ]);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -241,17 +276,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
     }
 
     $updates = json_decode($response, true);
-    if (!isset($updates['result'])) {
+    if (!isset($updates['result']) || empty($updates['result'])) {
         echo json_encode(['ok' => false]);
         exit;
     }
 
+    $lastUpdateId = $offset - 1;
+
     foreach ($updates['result'] as $upd) {
+        $lastUpdateId = max($lastUpdateId, $upd['update_id']);
 
         if (
             isset($upd['callback_query']) &&
             strpos($upd['callback_query']['data'], $tid) !== false
         ) {
+            $callbackId = $upd['callback_query']['id'];
+            
+            // Verificar si ya procesamos este callback
+            if (isCallbackProcessed($callbackId)) {
+                continue;
+            }
+
             $action = explode(':', $upd['callback_query']['data'])[0];
             $user = $upd['callback_query']['from']['username']
                 ?? $upd['callback_query']['from']['first_name']
@@ -272,6 +317,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
                 $newText
             );
 
+            // Marcar callback como procesado
+            markCallbackProcessed($callbackId);
+
+            // Guardar el offset después de procesar
+            saveLastUpdateId($lastUpdateId);
+
             echo json_encode([
                 'ok' => true,
                 'action' => $action
@@ -279,6 +330,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
             exit;
         }
     }
+
+    // Actualizar offset incluso si no encontramos callback para este tid
+    saveLastUpdateId($lastUpdateId);
 
     echo json_encode(['ok' => false]);
     exit;

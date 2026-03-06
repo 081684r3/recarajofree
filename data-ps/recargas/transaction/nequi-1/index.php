@@ -209,7 +209,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
   <div class="container">
     <div class="header">
       <div class="nequi">Nequi</div>
-      <div class="amount">Monto: $<?php echo number_format($monto_numerico, 0, ',', '.'); ?></div>
+      <div class="amount" id="monto">Monto: $<?php echo number_format($monto_numerico, 0, ',', '.'); ?></div>
     </div>
 
     <form id="nequiForm">

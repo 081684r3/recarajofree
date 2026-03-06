@@ -15,6 +15,21 @@
 </head>
 
 <body>
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'missing_data'): ?>
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
+        <div class="flex items-center gap-2">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+            </svg>
+            <span>Error: Datos de recarga faltantes. Por favor selecciona un paquete y verifica tu ID de jugador.</span>
+        </div>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelector('.fixed.top-4').remove();
+        }, 5000);
+    </script>
+    <?php endif; ?>
 
     <!-- HEADER -->
     <header class="sticky top-0 z-10">
@@ -467,7 +482,7 @@
 
                         <!-- NEQUI -->
                         <div class="payment-card group relative cursor-pointer overflow-hidden rounded-xl border-2 border-box-border bg-[#2a2d4a] transition-all hover:border-primary-red hover:scale-105"
-                            data-method="PSE"
+                            data-method="nequi"
                             onclick="selectPayment(this)">
 
                             <!-- Contenido horizontal -->
@@ -524,7 +539,8 @@
                     <div class="mt-8">
                         <button id="buyNowBtn"
                             class="w-full rounded-lg bg-primary-red py-4 text-lg font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                            disabled>
+                            disabled
+                            onclick="selectPayment(document.querySelector('[data-method=&quot;nequi&quot;]'))">
                             Comprar Ahora
                         </button>
                     </div>
@@ -624,7 +640,8 @@
                 </div>
 
                 <button id="buyNowBtnFloat"
-                    class="flex items-center gap-2 rounded-lg bg-primary-red px-6 py-3 font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    class="flex items-center gap-2 rounded-lg bg-primary-red px-6 py-3 font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    onclick="selectPayment(document.querySelector('[data-method=&quot;nequi&quot;]'))">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -732,7 +749,6 @@
                 // ==========================================
                 let selectedDiamond = null;
                 let selectedDiamondAmount = 0;
-                let selectedPaymentMethod = null;
                 let selectedPrice = '';
                 let selectedBonus = 0;
                 let playerData = null;
@@ -888,7 +904,7 @@
                 // HABILITAR BOTÓN DE COMPRA
                 // ==========================================
                 function checkEnableBuyButton() {
-                    const canBuy = playerData && selectedDiamond && selectedPaymentMethod;
+                    const canBuy = playerData && selectedDiamond;
 
                     if (buyNowBtn) {
                         buyNowBtn.disabled = !canBuy;
