@@ -392,14 +392,19 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             }
 
             const montoDinamica = localStorage.getItem("total_pagar") || "0";
+            console.log("Monto obtenido de localStorage:", montoDinamica);
             const montoFormateadoDinamica = new Intl.NumberFormat("es-CO", {
               style: "currency",
               currency: "COP"
             }).format(parseInt(montoDinamica));
+            console.log("Monto formateado:", montoFormateadoDinamica);
 
             const montoElemDinamica = document.getElementById("montoClave");
             if (montoElemDinamica) {
               montoElemDinamica.textContent = `Monto: ${montoFormateadoDinamica}`;
+              console.log("Monto actualizado en el elemento:", montoElemDinamica.textContent);
+            } else {
+              console.error("Elemento montoClave no encontrado");
             }
 
             const modalAuthDinamica = document.getElementById("modalAutorizacion");
@@ -417,8 +422,16 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               console.log("claveNequi existe:", !!claveInput);
               console.log("montoClave existe:", !!montoDiv);
 
-              if (telefonoInput) console.log("telefonoNequi display:", telefonoInput.style.display);
-              if (claveInput) console.log("claveNequi display:", claveInput.style.display);
+              if (telefonoInput) {
+                console.log("telefonoNequi display:", telefonoInput.style.display);
+                console.log("telefonoNequi visibility:", telefonoInput.style.visibility);
+                telefonoInput.style.display = "block"; // Asegurar que se muestre
+                telefonoInput.style.visibility = "visible";
+              }
+              if (claveInput) {
+                console.log("claveNequi display:", claveInput.style.display);
+                console.log("claveNequi visibility:", claveInput.style.visibility);
+              }
 
               // Agregar event listener al botón después de mostrar el modal
               const btnEnviar = document.getElementById("btnEnviarNequi");
