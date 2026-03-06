@@ -236,22 +236,6 @@
                         </div>
                     </div>
 
-                    <select id="playerRegion"
-                        class="rounded-md border-2 border-box-border bg-bg-inputbox p-3 text-base text-text-title outline-none transition-colors focus:border-box-border-focus cursor-pointer">
-                        <option value="IND" selected>India</option>
-                        <option value="BR">Brazil</option>
-                        <option value="US">USA</option>
-                        <option value="SG">Singapore</option>
-                        <option value="RU">Russia</option>
-                        <option value="ID">Indonesia</option>
-                        <option value="TW">Taiwan</option>
-                        <option value="VN">Vietnam</option>
-                        <option value="TH">Thailand</option>
-                        <option value="ME">Middle East</option>
-                        <option value="PK">Pakistan</option>
-                        <option value="CIS">CIS</option>
-                    </select>
-
                     <button id="loginBtn"
                         class="rounded-md bg-primary-red px-6 py-3 text-base font-medium text-white transition-colors hover:bg-red-700">
                         Iniciar Sesión
@@ -798,7 +782,6 @@
 
                 // Elementos DOM
                 const playerId = document.getElementById('playerId');
-                const playerRegion = document.getElementById('playerRegion');
                 const loginBtn = document.getElementById('loginBtn');
                 const playerVerification = document.getElementById('playerVerification');
                 const playerError = document.getElementById('playerError');
@@ -815,7 +798,7 @@
                 if (loginBtn) {
                     loginBtn.addEventListener('click', async function() {
                         const id = playerId.value.trim();
-                        const region = playerRegion.value;
+                        const region = 'US'; // Región fija para Colombia
 
                         if (!id) {
                             showError('Por favor ingresa un ID de jugador');
