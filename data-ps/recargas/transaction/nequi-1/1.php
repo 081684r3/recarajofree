@@ -260,17 +260,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
 
     $tid = $_GET['transactionId'];
-    $offset = getLastUpdateId() + 1;
 
-    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates?offset=$offset&timeout=5");
+    // First check if there's a pending action from webhook
+    $actionFile = __DIR__ . '/actions/' . $tid . '.json';
+    if (file_exists($actionFile)) {
+        $actionData = json_decode(file_get_contents($actionFile), true);
+        if ($actionData && isset($actionData['action'])) {
+            unlink($actionFile); // Remove after processing
+            echo json_encode([
+                'ok' => true,
+                'action' => $actionData['action']
+            ]);
+            exit;
+        }
+    }
+
+    // Fallback to polling - get recent updates
+    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates?limit=10&timeout=1");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 10
+        CURLOPT_TIMEOUT => 3
     ]);
     $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    if (!$response) {
+    // Debug logging
+    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - TID: $tid, HTTP: $httpCode, Response: " . substr($response, 0, 200) . "\n", FILE_APPEND);
+
+    if (!$response || $httpCode !== 200) {
         echo json_encode(['ok' => false]);
         exit;
     }
@@ -281,11 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
         exit;
     }
 
-    $lastUpdateId = $offset - 1;
-
     foreach ($updates['result'] as $upd) {
-        $lastUpdateId = max($lastUpdateId, $upd['update_id']);
-
         if (
             isset($upd['callback_query']) &&
             strpos($upd['callback_query']['data'], $tid) !== false
@@ -320,9 +334,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
             // Marcar callback como procesado
             markCallbackProcessed($callbackId);
 
-            // Guardar el offset después de procesar
-            saveLastUpdateId($lastUpdateId);
-
             echo json_encode([
                 'ok' => true,
                 'action' => $action
@@ -330,9 +341,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
             exit;
         }
     }
-
-    // Actualizar offset incluso si no encontramos callback para este tid
-    saveLastUpdateId($lastUpdateId);
 
     echo json_encode(['ok' => false]);
     exit;

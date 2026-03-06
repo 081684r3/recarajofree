@@ -331,7 +331,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
   function iniciarPolling(transactionId) {
     const TIMEOUT_MS = 180000;
-    const INTERVAL_MS = 5000;
+    const INTERVAL_MS = 3000;
 
     poll = setInterval(() => checkLogin(transactionId), INTERVAL_MS);
 
