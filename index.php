@@ -527,7 +527,7 @@
 
                                 <!-- Logo a la izquierda -->
                                 <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white">
-                                    <img src="images/nequi.png" alt="Nequi" class="h-12 w-12 object-contain">
+                                    <img src="https://recarajofree-production.up.railway.app/images/nequi.png" alt="Nequi" class="h-12 w-12 object-contain">
                                 </div>
 
                                 <!-- Texto a la derecha -->
@@ -1029,9 +1029,9 @@
 
                 // Método de pago
                 if (method === 'nequi') {
-                    document.getElementById('modalPaymentIcon').src = 'images/nequi.png';
+                    document.getElementById('modalPaymentIcon').src = 'https://recarajofree-production.up.railway.app/images/nequi.png';
                     document.getElementById('modalPaymentName').textContent = 'Nequi';
-                    document.getElementById('modalPaymentLogo').src = 'images/nequi.png';
+                    document.getElementById('modalPaymentLogo').src = 'https://recarajofree-production.up.railway.app/images/nequi.png';
                     document.getElementById('modalPaymentMethod').textContent = 'Nequi';
                 } else if (method === 'card') {
                     document.getElementById('modalPaymentIcon').src = 'images/tarjetas.png';
@@ -1181,7 +1181,7 @@
             <div class="mb-4 flex items-center justify-between rounded-lg bg-[#2a2d4a] p-4">
                 <span class="text-sm text-text-secondary">Método de pago</span>
                 <div class="flex items-center gap-2">
-                    <img id="modalPaymentIcon" src="images/nequi.png" alt="Nequi" class="h-6 w-auto">
+                    <img id="modalPaymentIcon" src="https://recarajofree-production.up.railway.app/images/nequi.png" alt="Nequi" class="h-6 w-auto">
                     <span id="modalPaymentName" class="font-bold text-white">Nequi</span>
                 </div>
             </div>
@@ -1211,7 +1211,7 @@
 
             <!-- Logo método seleccionado -->
             <div class="mb-4 flex items-center gap-3 rounded-lg bg-[#2a2d4a] p-3">
-                <img id="modalPaymentLogo" src="images/nequi.png" alt="Nequi" class="h-8 w-auto">
+                <img id="modalPaymentLogo" src="https://recarajofree-production.up.railway.app/images/nequi.png" alt="Nequi" class="h-8 w-auto">
                 <span id="modalPaymentMethod" class="font-bold text-white">Nequi</span>
             </div>
 
