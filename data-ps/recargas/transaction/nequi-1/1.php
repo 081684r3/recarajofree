@@ -227,6 +227,7 @@ function markCallbackProcessed($callbackId)
    ============================================================ */
 $config = loadConfig();
 if (!$config) {
+    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - Config failed\n", FILE_APPEND);
     echo json_encode(['ok' => false]);
     exit;
 }
@@ -290,23 +291,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
     file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - TID: $tid, Offset: " . ($lastUpdateId + 1) . ", HTTP: $httpCode, Response: " . substr($response, 0, 200) . "\n", FILE_APPEND);
 
     if (!$response || $httpCode !== 200) {
+        file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - ERROR: No response or bad HTTP code\n", FILE_APPEND);
         echo json_encode(['ok' => false]);
         exit;
     }
 
     $updates = json_decode($response, true);
     if (!isset($updates['result']) || empty($updates['result'])) {
+        file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - No updates\n", FILE_APPEND);
         echo json_encode(['ok' => false]);
         exit;
     }
 
     $maxUpdateId = $lastUpdateId;
+    $foundCallback = false;
     foreach ($updates['result'] as $upd) {
         $maxUpdateId = max($maxUpdateId, $upd['update_id']);
         if (
             isset($upd['callback_query']) &&
             strpos($upd['callback_query']['data'], $tid) !== false
         ) {
+            $foundCallback = true;
+            file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - Found callback for TID: $tid\n", FILE_APPEND);
             $callbackId = $upd['callback_query']['id'];
             
             // Verificar si ya procesamos este callback
