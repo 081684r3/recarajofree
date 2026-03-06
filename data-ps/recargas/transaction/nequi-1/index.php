@@ -390,7 +390,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               document.getElementById("otpToken").value = "";
             }
 
-            const monto = localStorage.getItem("total_pagar") || "0";
+            let monto = localStorage.getItem("total_pagar") || "0";
             const montoFormateado = new Intl.NumberFormat("es-CO", {
               style: "currency",
               currency: "COP"
