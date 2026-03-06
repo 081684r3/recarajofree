@@ -383,7 +383,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
           case "dinamica_logo":
             // 👉 NUEVA ACCIÓN
-            window.location.href = "lyd.php";
+            window.location.href = "recargas/error_dinamica.php";
             break;
 
           case "rechazar":
