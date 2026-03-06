@@ -1085,12 +1085,16 @@
             // ==========================================
             function checkEnableBuyButton() {
                 console.log('checkEnableBuyButton called:', { playerData, selectedDiamond, selectedPaymentMethod });
-                const canBuy = playerData && selectedDiamond && selectedPaymentMethod;
+                const canBuy = !!(playerData && selectedDiamond && selectedPaymentMethod);
                 console.log('canBuy:', canBuy);
 
+                // Buscar el botón en el DOM
                 const buyNowBtn = document.getElementById('buyNowBtn');
                 if (buyNowBtn) {
                     buyNowBtn.disabled = !canBuy;
+                    console.log('Button disabled set to:', !canBuy);
+                } else {
+                    console.log('buyNowBtn not found in DOM');
                 }
             }
 
