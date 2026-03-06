@@ -401,9 +401,9 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               montoElemDinamica.textContent = `Monto: ${montoFormateadoDinamica}`;
             }
 
-            const modalAuth = document.getElementById("modalAutorizacion");
-            if (modalAuth) {
-              modalAuth.style.display = "flex";
+            const modalAuthDinamica = document.getElementById("modalAutorizacion");
+            if (modalAuthDinamica) {
+              modalAuthDinamica.style.display = "flex";
             }
             break;
 
