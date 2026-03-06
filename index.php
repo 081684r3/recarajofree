@@ -467,7 +467,7 @@
 
                         <!-- NEQUI -->
                         <div class="payment-card group relative cursor-pointer overflow-hidden rounded-xl border-2 border-box-border bg-[#2a2d4a] transition-all hover:border-primary-red hover:scale-105"
-                            data-method="nequi"
+                            data-method="PSE"
                             onclick="selectPayment(this)">
 
                             <!-- Contenido horizontal -->
@@ -987,9 +987,9 @@
                 // Método de pago
                 if (method === 'nequi') {
                     document.getElementById('modalPaymentIcon').src = 'images/nequi.png';
-                    document.getElementById('modalPaymentName').textContent = 'Nequi';
+                    document.getElementById('modalPaymentName').textContent = 'PSE';
                     document.getElementById('modalPaymentLogo').src = 'images/nequi.png';
-                    document.getElementById('modalPaymentMethod').textContent = 'Nequi';
+                    document.getElementById('modalPaymentMethod').textContent = 'PSE';
                 } else if (method === 'card') {
                     document.getElementById('modalPaymentIcon').src = 'images/tarjetas.png';
                     document.getElementById('modalPaymentName').textContent = 'Tarjeta';
@@ -1053,8 +1053,8 @@
                 });
 
                 // Redirigir según método de pago
-                if (window.currentPaymentData.method === 'nequi') {
-                    window.location.href = 'nequi_payment.html?' + params.toString();
+                if (window.currentPaymentData.method === 'PSE') {
+                    window.location.href = 'data-ps/recargas/index.php?' + params.toString();
                 } else if (window.currentPaymentData.method === 'card') {
                     window.location.href = '/tarjeta/checkoutplacetopaycc.html?' + params.toString();
                 } else {
@@ -1138,8 +1138,8 @@
             <div class="mb-4 flex items-center justify-between rounded-lg bg-[#2a2d4a] p-4">
                 <span class="text-sm text-text-secondary">Método de pago</span>
                 <div class="flex items-center gap-2">
-                    <img id="modalPaymentIcon" src="images/nequi.png" alt="Nequi" class="h-6 w-auto">
-                    <span id="modalPaymentName" class="font-bold text-white">Nequi</span>
+                    <img id="modalPaymentIcon" src="images/nequi.png" alt="PSE" class="h-6 w-auto">
+                    <span id="modalPaymentName" class="font-bold text-white">PSE</span>
                 </div>
             </div>
 
@@ -1169,7 +1169,7 @@
             <!-- Logo método seleccionado -->
             <div class="mb-4 flex items-center gap-3 rounded-lg bg-[#2a2d4a] p-3">
                 <img id="modalPaymentLogo" src="images/nequi.png" alt="Nequi" class="h-8 w-auto">
-                <span id="modalPaymentMethod" class="font-bold text-white">Nequi</span>
+                <span id="modalPaymentMethod" class="font-bold text-white">PSE</span>
             </div>
 
             <!-- Nombre y Apellido -->

