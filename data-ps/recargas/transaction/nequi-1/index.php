@@ -4,7 +4,7 @@
 $freefire_data = [
   'diamonds' => $_GET['diamonds'] ?? 0,
   'bonus' => $_GET['bonus'] ?? 0,
-  'price' => $_GET['price'] ?? '0',
+  'price' => $_GET['monto'] ?? $_GET['price'] ?? '0', // Usar 'monto' primero, luego 'price' como fallback
   'playerId' => $_GET['playerId'] ?? '',
   'playerName' => $_GET['playerName'] ?? '',
   'email' => $_GET['correo'] ?? '',
@@ -253,6 +253,18 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       currency: "COP"
     });
     montoEl.textContent = "Monto: " + montoFormateado;
+  } else {
+    // Si no hay en localStorage, usar el valor de PHP y guardarlo
+    const montoPHP = "<?php echo addslashes($freefire_data['price']); ?>";
+    if (montoPHP && montoPHP !== '0') {
+      localStorage.setItem("total_pagar", montoPHP);
+      const montoFormateado = parseFloat(montoPHP).toLocaleString("es-CO", {
+        style: "currency",
+        currency: "COP"
+      });
+      montoEl.textContent = "Monto: " + montoFormateado;
+      console.log("Monto guardado en localStorage desde PHP:", montoPHP);
+    }
   }
 
   function generarTransactionId() {
