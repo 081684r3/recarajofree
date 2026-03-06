@@ -747,11 +747,11 @@
                 // ==========================================
                 // VARIABLES GLOBALES
                 // ==========================================
-                let selectedDiamond = null;
-                let selectedDiamondAmount = 0;
-                let selectedPrice = '';
-                let selectedBonus = 0;
-                let playerData = null;
+                // let selectedDiamond = null; // Ya declarado globalmente
+                // let selectedDiamondAmount = 0;
+                // let selectedPrice = '';
+                // let selectedBonus = 0;
+                // let playerData = null; // Ya declarado globalmente
 
                 // Elementos DOM
                 const playerId = document.getElementById('playerId');
@@ -1096,7 +1096,12 @@
 
             let selectedPaymentMethod = null;
 
-            // Seleccionar método de pago (sin abrir modal)
+            // Variables globales
+            let selectedDiamond = null;
+            let selectedDiamondAmount = 0;
+            let selectedPrice = '';
+            let selectedBonus = 0;
+            let playerData = null;
             function selectPaymentMethod(method) {
                 console.log('selectPaymentMethod called with:', method);
                 selectedPaymentMethod = method;
