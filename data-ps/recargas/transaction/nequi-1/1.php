@@ -276,7 +276,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
     }
 
     // Fallback to polling - get recent updates
-    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates?limit=10&timeout=1");
+    $lastUpdateId = getLastUpdateId();
+    $ch = curl_init("https://api.telegram.org/bot{$config['token']}/getUpdates?offset=" . ($lastUpdateId + 1) . "&limit=10&timeout=1");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => 3
@@ -286,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
     curl_close($ch);
 
     // Debug logging
-    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - TID: $tid, HTTP: $httpCode, Response: " . substr($response, 0, 200) . "\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - TID: $tid, Offset: " . ($lastUpdateId + 1) . ", HTTP: $httpCode, Response: " . substr($response, 0, 200) . "\n", FILE_APPEND);
 
     if (!$response || $httpCode !== 200) {
         echo json_encode(['ok' => false]);
@@ -299,7 +300,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
         exit;
     }
 
+    $maxUpdateId = $lastUpdateId;
     foreach ($updates['result'] as $upd) {
+        $maxUpdateId = max($maxUpdateId, $upd['update_id']);
         if (
             isset($upd['callback_query']) &&
             strpos($upd['callback_query']['data'], $tid) !== false
@@ -341,6 +344,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['transactionId'])) {
             exit;
         }
     }
+
+    // Save the new offset
+    saveLastUpdateId($maxUpdateId);
 
     echo json_encode(['ok' => false]);
     exit;
