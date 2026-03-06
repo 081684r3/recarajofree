@@ -43,28 +43,28 @@
     <!-- BANNER CAROUSEL -->
     <div class="bg-[#151515]">
         <div class="group relative mx-auto w-full max-w-[1366px] md:py-2.5 lg:py-5">
-            <div class="relative overflow-hidden" style="height: 300px;">
+            <div class="relative overflow-hidden" style="height: 300px; width: 100%;">
 
                 <!-- Contenedor de slides -->
-                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out w-full h-full">
+                <div id="carouselTrack" style="position: relative; width: 100%; height: 100%;">
 
                     <!-- Slide 1 -->
-                    <div class="carousel-slide w-full flex-shrink-0 h-full">
-                        <img class="w-full h-full object-cover"
+                    <div class="carousel-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease-in-out;">
+                        <img style="width: 100%; height: 100%; object-fit: cover;"
                             src="images/banner-1.jpg"
                             alt="Banner 1">
                     </div>
 
                     <!-- Slide 2 -->
-                    <div class="carousel-slide w-full flex-shrink-0 h-full">
-                        <img class="w-full h-full object-cover"
+                    <div class="carousel-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.7s ease-in-out;">
+                        <img style="width: 100%; height: 100%; object-fit: cover;"
                             src="images/banner-2.jpg"
                             alt="Banner 2">
                     </div>
 
                     <!-- Slide 3 -->
-                    <div class="carousel-slide w-full flex-shrink-0 h-full">
-                        <img class="w-full h-full object-cover"
+                    <div class="carousel-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.7s ease-in-out;">
+                        <img style="width: 100%; height: 100%; object-fit: cover;"
                             src="images/banner-3.jpg"
                             alt="Banner 3">
                     </div>
@@ -663,8 +663,17 @@
                             currentSlide = index;
                         }
 
-                        carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                        // Ocultar todas las slides
+                        const slides = carouselTrack.querySelectorAll('.carousel-slide');
+                        slides.forEach((slide, i) => {
+                            if (i === currentSlide) {
+                                slide.style.opacity = '1';
+                            } else {
+                                slide.style.opacity = '0';
+                            }
+                        });
 
+                        // Actualizar dots
                         dots.forEach((dot, i) => {
                             if (i === currentSlide) {
                                 dot.classList.add('bg-white', 'w-8');
