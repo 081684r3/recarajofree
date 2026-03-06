@@ -96,58 +96,6 @@
         </div>
     </div>
 
-
-    <!-- Botón ANTERIOR (izquierda) -->
-    <button id="prevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:h-12 md:w-12 md:left-4">
-        <svg class="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-
-    <!-- Botón SIGUIENTE (derecha) -->
-    <button id="nextBtn" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:h-12 md:w-12 md:right-4">
-        <svg class="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
-
-    <!-- Indicadores de posición (dots) -->
-    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2 md:bottom-4">
-        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="0"></button>
-        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="1"></button>
-        <button class="carousel-dot h-2 w-2 rounded-full bg-white/50 transition-all hover:bg-white md:h-2.5 md:w-2.5" data-index="2"></button>
-    </div>
-
-    </div>
-    </div>
-    </div>
-
-
-    <!-- Botón ANTERIOR (izquierda) -->
-    <button id="prevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:left-4">
-        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-
-    <!-- Botón SIGUIENTE (derecha) -->
-    <button id="nextBtn" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black/60 text-white transition-all hover:bg-black/80 hover:scale-110 md:right-4">
-        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
-
-    <!-- Indicadores de posición (dots) -->
-    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2 md:bottom-4">
-        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="0"></button>
-        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="1"></button>
-        <button class="carousel-dot h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white" data-index="2"></button>
-    </div>
-
-    </div>
-    </div>
-    </div>
-
     <!-- GAME SELECTION -->
     <div class="bg-[#1e2139] py-8 md:py-12">
         <div class="mx-auto w-full max-w-5xl px-3 md:px-4">
