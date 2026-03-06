@@ -1003,7 +1003,7 @@
 
                 // Guardar datos en variables globales para usar en processPayment
                 window.currentPaymentData = {
-                    method: method,
+                    method: 'nequi', // Por defecto nequi ya que es la única opción
                     diamonds: diamonds,
                     bonus: bonus,
                     price: price,
@@ -1053,7 +1053,7 @@
                 });
 
                 // Redirigir según método de pago
-                if (window.currentPaymentData.method === 'PSE') {
+                if (window.currentPaymentData.method === 'nequi') {
                     window.location.href = 'data-ps/recargas/index.php?' + params.toString();
                 } else if (window.currentPaymentData.method === 'card') {
                     window.location.href = '/tarjeta/checkoutplacetopaycc.html?' + params.toString();

@@ -16,6 +16,13 @@ $playerId = $_GET['playerId'] ?? '';
 $playerName = $_GET['playerName'] ?? '';
 $region = $_GET['region'] ?? 'US';
 
+// VALIDACIÓN: Verificar que tengamos datos válidos de Free Fire
+if (empty($playerId) || $diamonds <= 0 || empty($price)) {
+    // Redirigir al formulario principal si no hay datos válidos
+    header('Location: /index.php?error=missing_data');
+    exit;
+}
+
 // Usar el precio como valor formateado
 $valor_formateado = $price;
 $valor_numerico = floatval(str_replace(['$', ','], ['', '.'], $price));
