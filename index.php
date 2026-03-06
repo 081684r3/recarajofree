@@ -43,28 +43,28 @@
     <!-- BANNER CAROUSEL -->
     <div class="bg-[#151515]">
         <div class="group relative mx-auto w-full max-w-[1366px] md:py-2.5 lg:py-5">
-            <div class="relative overflow-hidden">
+            <div class="relative overflow-hidden" style="height: 300px;">
 
                 <!-- Contenedor de slides -->
-                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out w-full">
+                <div id="carouselTrack" class="flex transition-transform duration-700 ease-in-out w-full h-full">
 
                     <!-- Slide 1 -->
-                    <div class="carousel-slide w-full flex-shrink-0">
-                        <img class="w-full h-auto"
+                    <div class="carousel-slide w-full flex-shrink-0 h-full">
+                        <img class="w-full h-full object-cover"
                             src="images/banner-1.jpg"
                             alt="Banner 1">
                     </div>
 
                     <!-- Slide 2 -->
-                    <div class="carousel-slide w-full flex-shrink-0">
-                        <img class="w-full h-auto"
+                    <div class="carousel-slide w-full flex-shrink-0 h-full">
+                        <img class="w-full h-full object-cover"
                             src="images/banner-2.jpg"
                             alt="Banner 2">
                     </div>
 
                     <!-- Slide 3 -->
-                    <div class="carousel-slide w-full flex-shrink-0">
-                        <img class="w-full h-auto"
+                    <div class="carousel-slide w-full flex-shrink-0 h-full">
+                        <img class="w-full h-full object-cover"
                             src="images/banner-3.jpg"
                             alt="Banner 3">
                     </div>
