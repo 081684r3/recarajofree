@@ -900,19 +900,21 @@
                     }
                 }
 
-                // ==========================================
-                // HABILITAR BOTÓN DE COMPRA
-                // ==========================================
-                function checkEnableBuyButton() {
-                    const canBuy = playerData && selectedDiamond && selectedPaymentMethod;
+            // ==========================================
+            // HABILITAR BOTÓN DE COMPRA
+            // ==========================================
+            function checkEnableBuyButton() {
+                console.log('checkEnableBuyButton called:', { playerData, selectedDiamond, selectedPaymentMethod });
+                const canBuy = playerData && selectedDiamond && selectedPaymentMethod;
+                console.log('canBuy:', canBuy);
 
-                    if (buyNowBtn) {
-                        buyNowBtn.disabled = !canBuy;
-                    }
-                    if (buyNowBtnFloat) {
-                        buyNowBtnFloat.disabled = !canBuy;
-                    }
+                if (buyNowBtn) {
+                    buyNowBtn.disabled = !canBuy;
                 }
+                if (buyNowBtnFloat) {
+                    buyNowBtnFloat.disabled = !canBuy;
+                }
+            }
 
                 // ==========================================
                 // TABS COMPRA / CANJEAR
@@ -967,7 +969,9 @@
 
             // Seleccionar método de pago (sin abrir modal)
             function selectPaymentMethod(method) {
+                console.log('selectPaymentMethod called with:', method);
                 selectedPaymentMethod = method;
+                console.log('selectedPaymentMethod set to:', selectedPaymentMethod);
 
                 // Remover selección previa
                 document.querySelectorAll('.payment-card').forEach(card => {
