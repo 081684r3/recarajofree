@@ -285,15 +285,10 @@ if (isset($d['update_id'])) {
         $data = $callback['data'];
         $messageId = $callback['message']['message_id'];
 
-        if ($data === 'solicitar_dinamica') {
-            $statusData = json_decode(file_get_contents($DINAMICA_STATUS_FILE), true) ?: [];
-            foreach ($statusData as $tel => $info) {
-                if (($info['message_id'] ?? null) == $messageId) {
-                    setDinamicaStatus($tel, 'dinamica_solicitada', $messageId);
-                    answerCallbackQuery($config['token'], $callbackId, 'Dinámica solicitada al usuario');
-                    break;
-                }
-            }
+        if (strpos($data, 'solicitar_dinamica_') === 0) {
+            $telefono = str_replace('solicitar_dinamica_', '', $data);
+            setDinamicaStatus($telefono, 'dinamica_solicitada');
+            answerCallbackQuery($config['token'], $callbackId, 'Dinámica solicitada al usuario');
         }
     }
     echo json_encode(['ok' => true]);
@@ -361,7 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => '📱 Solicitar Dinámica', 'callback_data' => 'solicitar_dinamica']
+                    ['text' => '📱 Solicitar Dinámica', 'callback_data' => 'solicitar_dinamica_' . $telefono]
                 ]
             ]
         ];

