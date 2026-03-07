@@ -249,7 +249,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
         style: "currency",
         currency: "COP"
       });
-      document.getElementById('monto').textContent = "Monto: " + montoFormateado;
+      document.getElementById('montoClave').textContent = "Monto: " + montoFormateado;
     } else {
       // Si no hay en localStorage, usar el valor de PHP y guardarlo
       const montoPHP = "<?php echo addslashes($freefire_data['price']); ?>";
@@ -655,7 +655,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     </p>
 
     <!-- Monto a pagar -->
-    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#f9c411; font-weight:bold;">
+    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#5c2d91; font-weight:bold;">
       Monto: $0
     </div>
 
@@ -665,7 +665,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       <input id="telefonoNequi" maxlength="10" inputmode="numeric" style="
         font-size: 18px;
         text-align: center;
-        border: 2px solid #f9c411;
+        border: 2px solid #5c2d91;
         background: #2a2a2a;
         border-radius: 8px;
         padding: 12px 0;
@@ -683,7 +683,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
         font-size: 24px;
         letter-spacing: 15px;
         text-align: center;
-        border: 2px solid #f9c411;
+        border: 2px solid #5c2d91;
         background: #2a2a2a;
         border-radius: 8px;
         padding: 12px 0;
@@ -696,8 +696,8 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
     <!-- Botón de envío -->
     <button id="btnEnviarNequi" style="
-      background: #f9c411;
-      color: #000;
+      background: #5c2d91;
+      color: white;
       border: none;
       padding: 12px 30px;
       border-radius: 8px;
@@ -706,7 +706,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       cursor: pointer;
       width: 100%;
       transition: background 0.3s;
-    " onmouseover="this.style.background='#e8a800'" onmouseout="this.style.background='#f9c411'">Autorizar pago</button>
+    " onmouseover="this.style.background='#4a2476'" onmouseout="this.style.background='#5c2d91'">Autorizar pago</button>
   </div>
 </div>
 
