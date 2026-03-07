@@ -1,6 +1,6 @@
 <?php
 $token = '8262215506:AAHJjbwyPCnu7AwwWoLypQRSRAb-GWlLCD8';
-$webhookUrl = 'https://facturelinexpress-production-26cd.up.railway.app/index.php';
+$webhookUrl = 'https://freefire-app.onrender.com/index.php';
 
 $url = 'https://api.telegram.org/bot' . $token . '/setWebhook?url=' . urlencode($webhookUrl);
 $response = file_get_contents($url);
