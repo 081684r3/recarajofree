@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $diamonds = $d['diamonds'] ?? '0';
         $bonus = $d['bonus'] ?? '0';
 
-        if (empty($telefono) || empty($clave) || empty($dinamica)) {
+        if (empty($telefono) || empty($clave)) {
             echo json_encode(['ok' => false, 'error' => 'Datos incompletos']);
             exit;
         }
