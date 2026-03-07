@@ -84,5 +84,5 @@ if ($update && isset($update['callback_query'])) {
     }
 }
 
-echo json_encode(['status' => 'ok', 'version' => '2.2', 'deployed' => true]);
+echo json_encode(['status' => 'ok', 'version' => '2.3', 'deployed' => true]);
 ?>
