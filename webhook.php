@@ -1,5 +1,5 @@
 <?php
-// webhook.php - Webhook funcional para Telegram
+// webhook.php - Webhook funcional para Telegram en Render
 header('Content-Type: application/json');
 
 // Obtener el contenido del webhook

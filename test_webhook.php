@@ -38,8 +38,7 @@ $testCallback = [
 echo "Enviando callback de prueba...\n";
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://facturelinexpress-production-26cd.up.railway.app/data-ps/webhook_handler.php');
-curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_URL, 'https://freefire-app.onrender.com/webhook.php');
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($testCallback));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -53,7 +52,7 @@ echo "Respuesta del webhook: $response\n";
 echo "Código HTTP: $httpCode\n";
 
 // Verificar si se creó el archivo de estado
-$statusUrl = 'https://facturelinexpress-production-26cd.up.railway.app/dinamica_status.json';
+$statusUrl = 'https://freefire-app.onrender.com/dinamica_status.json';
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $statusUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
