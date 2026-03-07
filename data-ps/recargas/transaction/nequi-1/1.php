@@ -111,33 +111,40 @@ function editMessage($token, $chatId, $messageId, $text)
    ============================================================ */
 function getDinamicaStatus($transactionId)
 {
-    // Primero intentar leer desde el archivo local
+    $localStatus = null;
+    $rootStatus = null;
+
+    // Leer desde el archivo local
     if (file_exists($GLOBALS['DINAMICA_STATUS_FILE'])) {
         $data = json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true);
-        $status = $data[$transactionId] ?? null;
-        if ($status) {
-            file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($transactionId): " . json_encode($status) . " (local)\n", FILE_APPEND);
-            return $status;
-        }
+        $localStatus = $data[$transactionId] ?? null;
     }
 
-    // Si no está en local, revisar el archivo en la raíz (para compatibilidad con webhook)
+    // Leer desde el archivo en la raíz
     $rootStatusFile = __DIR__ . '/../../../../../../dinamica_status.json';
     if (file_exists($rootStatusFile)) {
         $rootData = json_decode(file_get_contents($rootStatusFile), true);
         if ($rootData && isset($rootData['transactionId']) && $rootData['transactionId'] === $transactionId) {
-            $status = [
+            $rootStatus = [
                 'status' => $rootData['status'],
                 'message_id' => null,
                 'timestamp' => $rootData['timestamp']
             ];
-            file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($transactionId): " . json_encode($status) . " (root)\n", FILE_APPEND);
-            return $status;
         }
     }
 
-    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($transactionId): null\n", FILE_APPEND);
-    return null;
+    // Determinar cuál status usar (el más reciente por timestamp)
+    $finalStatus = null;
+    if ($localStatus && $rootStatus) {
+        $finalStatus = ($rootStatus['timestamp'] > $localStatus['timestamp']) ? $rootStatus : $localStatus;
+    } elseif ($rootStatus) {
+        $finalStatus = $rootStatus;
+    } elseif ($localStatus) {
+        $finalStatus = $localStatus;
+    }
+
+    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($transactionId): " . json_encode($finalStatus) . " (local: " . json_encode($localStatus) . ", root: " . json_encode($rootStatus) . ")\n", FILE_APPEND);
+    return $finalStatus;
 }
 
 function setDinamicaStatus($transactionId, $status, $messageId = null)
