@@ -23,8 +23,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar archivos del proyecto
 COPY . .
 
-# Exponer puertos
+# Exponer puertos (Railway usa PORT)
 EXPOSE 80 5000
+
+# Establecer variable de entorno para puerto
+ENV PORT=80
 
 # Script de inicio
 COPY start.sh /start.sh

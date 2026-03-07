@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Usar puerto de Railway (o 80 por defecto)
+PORT=${PORT:-80}
+
 # Cambiar al directorio de la API
 cd /app/FreeFire-Api
 
@@ -9,5 +12,5 @@ python app.py &
 # Cambiar al directorio raíz
 cd /app
 
-# Iniciar servidor PHP en puerto 80
-php -S 0.0.0.0:80 -t /app
+# Iniciar servidor PHP en el puerto especificado
+php -S 0.0.0.0:$PORT -t /app
