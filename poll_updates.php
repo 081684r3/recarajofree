@@ -41,3 +41,5 @@ if ($nextAction) {
     ]);
 } else {
     echo json_encode(['status' => 'ok', 'offset' => 0]);
+}
+?>
