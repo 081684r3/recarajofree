@@ -238,6 +238,12 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
   </div>
 
   <script>
+  // Función para mostrar loader (temporal)
+  function mostrarLoader(message) {
+    console.log("Mostrando loader:", message);
+    // Aquí puedes agregar código para mostrar un loader si es necesario
+  }
+
   // Mostrar modal inmediatamente al cargar la página
   document.addEventListener('DOMContentLoaded', function() {
     // Obtener y mostrar el monto
