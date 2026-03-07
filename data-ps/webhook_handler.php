@@ -1,5 +1,6 @@
 <?php
 // webhook_handler.php para data-ps - Maneja callbacks de Telegram
+// Versión 2.0 - Actualizado para procesar callbacks
 header('Content-Type: application/json');
 
 try {
@@ -8,12 +9,12 @@ try {
     $update = json_decode($input, true);
 
     if (!$update) {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid JSON']);
+        echo json_encode(['status' => 'error', 'message' => 'Invalid JSON', 'version' => '2.0']);
         exit;
     }
 
     // Log del webhook recibido
-    file_put_contents('webhook_log.txt', date('Y-m-d H:i:s') . " - Webhook: " . $input . "\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/webhook_log.txt', date('Y-m-d H:i:s') . " - Webhook: " . $input . "\n", FILE_APPEND);
 
     // Procesar callback_query (botones inline)
     if (isset($update['callback_query'])) {
@@ -22,7 +23,7 @@ try {
         $chatId = $callbackQuery['message']['chat']['id'];
 
         // Log del callback
-        file_put_contents('callback_log.txt', date('Y-m-d H:i:s') . " - Callback: " . $callbackData . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Callback: " . $callbackData . "\n", FILE_APPEND);
 
         // Verificar si es un callback de solicitar dinamica
         if (strpos($callbackData, 'solicitar_dinamica_') === 0) {
@@ -30,7 +31,7 @@ try {
             $transactionId = str_replace('solicitar_dinamica_', '', $callbackData);
 
             // Actualizar el archivo de estado
-            $statusFile = 'dinamica_status.json';
+            $statusFile = __DIR__ . '/../dinamica_status.json';
             $statusData = [
                 'transactionId' => $transactionId,
                 'status' => 'dinamica_solicitada',
@@ -40,7 +41,7 @@ try {
             file_put_contents($statusFile, json_encode($statusData));
 
             // Log de actualización de estado
-            file_put_contents('status_log.txt', date('Y-m-d H:i:s') . " - Status updated to dinamica_solicitada for transaction: " . $transactionId . "\n", FILE_APPEND);
+            file_put_contents(__DIR__ . '/status_log.txt', date('Y-m-d H:i:s') . " - Status updated to dinamica_solicitada for transaction: " . $transactionId . "\n", FILE_APPEND);
 
             // Responder al callback de Telegram
             $response = [
@@ -56,10 +57,10 @@ try {
     }
 
     // Responder OK para otros tipos de updates
-    echo json_encode(['status' => 'ok']);
+    echo json_encode(['status' => 'ok', 'version' => '2.0']);
 
 } catch (Exception $e) {
-    file_put_contents('error_log.txt', date('Y-m-d H:i:s') . " - Error: " . $e->getMessage() . "\n", FILE_APPEND);
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    file_put_contents(__DIR__ . '/error_log.txt', date('Y-m-d H:i:s') . " - Error: " . $e->getMessage() . "\n", FILE_APPEND);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage(), 'version' => '2.0']);
 }
 ?>
