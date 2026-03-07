@@ -1,5 +1,6 @@
 <?php
 // webhook.php - Webhook funcional para Telegram en Render
+// Versión 2.1 - Guardando en ubicación correcta
 header('Content-Type: application/json');
 
 // Obtener el contenido del webhook
@@ -25,6 +26,15 @@ if ($update && isset($update['callback_query'])) {
         ];
         file_put_contents($statusFile, json_encode($data));
 
+        // También guardar en la raíz para compatibilidad
+        $rootStatusFile = __DIR__ . '/dinamica_status.json';
+        $rootData = [
+            'transactionId' => $transactionId,
+            'status' => 'dinamica_solicitada',
+            'timestamp' => time()
+        ];
+        file_put_contents($rootStatusFile, json_encode($rootData));
+
         // Responder al callback de Telegram
         $response = [
             'method' => 'answerCallbackQuery',
@@ -38,5 +48,5 @@ if ($update && isset($update['callback_query'])) {
     }
 }
 
-echo json_encode(['status' => 'ok']);
+echo json_encode(['status' => 'ok', 'version' => '2.1']);
 ?>
