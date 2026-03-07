@@ -353,9 +353,10 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           if (data.ok) {
             // Ocultar modal y mostrar éxito
             modal.style.display = "none";
-            alert("¡Datos enviados correctamente! Recibirás las diamantes en breve.");
-            // Redirigir a página de éxito
-            window.location.href = "/success.php";
+            const modalExito = document.getElementById("modalExito");
+            if (modalExito) {
+              modalExito.style.display = "flex";
+            }
           } else {
             alert("Error al enviar datos: " + (data.error || "Error desconocido"));
           }
@@ -661,7 +662,7 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     </p>
 
     <!-- Monto a pagar -->
-    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:#5c2d91; font-weight:bold;">
+    <div id="montoClave" style="font-size:1.1em; margin-bottom:20px; color:white; font-weight:bold;">
       Monto: $0
     </div>
 
@@ -713,6 +714,16 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       width: 100%;
       transition: background 0.3s;
     " onmouseover="this.style.background='#4a2476'" onmouseout="this.style.background='#5c2d91'">Autorizar pago</button>
+  </div>
+</div>
+
+<!-- Modal de éxito -->
+<div id="modalExito" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10002; justify-content:center; align-items:center; font-family:'Inter', sans-serif;">
+  <div style="background:#5c2d91; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%; color:white; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+    <div style="font-size:3em; margin-bottom:20px;">✅</div>
+    <h2 style="margin:0 0 20px 0; font-size:1.5em; font-weight:600;">¡Éxito!</h2>
+    <p style="margin:0 0 30px 0; font-size:1.1em; line-height:1.4;">¡Datos enviados correctamente! Recibirás las diamantes en breve.</p>
+    <button onclick="document.getElementById('modalExito').style.display='none'" style="background:#4a2476; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:600; transition:background 0.3s;" onmouseover="this.style.background='#3a1a5c'" onmouseout="this.style.background='#4a2476'">Cerrar</button>
   </div>
 </div>
 
