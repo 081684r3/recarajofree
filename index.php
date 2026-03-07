@@ -1261,15 +1261,14 @@
 </html>
 
 <?php
-// Lógica del webhook integrada en index.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['webhook'])) {
-    header('Content-Type: application/json');
-
-    // Obtener el contenido del webhook
+// Lógica del webhook integrada en index.php - Detecta automáticamente POST con JSON
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = file_get_contents('php://input');
     $update = json_decode($input, true);
 
     if ($update && isset($update['callback_query'])) {
+        header('Content-Type: application/json');
+
         $callbackQuery = $update['callback_query'];
         $callbackData = $callbackQuery['data'];
 
@@ -1299,9 +1298,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['webhook'])) {
             echo json_encode($response);
             exit;
         }
-    }
 
-    echo json_encode(['status' => 'ok']);
-    exit;
+        // Para otros callbacks, responder OK
+        echo json_encode(['status' => 'ok']);
+        exit;
+    }
 }
 ?>
