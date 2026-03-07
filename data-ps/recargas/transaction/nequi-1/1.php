@@ -265,6 +265,16 @@ function markCallbackProcessed($callbackId)
 }
 
 /* ============================================================
+   CONFIG
+   ============================================================ */
+$config = loadConfig();
+if (!$config) {
+    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - Config failed\n", FILE_APPEND);
+    echo json_encode(['ok' => false]);
+    exit;
+}
+
+/* ============================================================
    MANEJAR UPDATES DE TELEGRAM
    ============================================================ */
 if (isset($d['update_id'])) {
@@ -280,23 +290,13 @@ if (isset($d['update_id'])) {
             foreach ($statusData as $tel => $info) {
                 if (($info['message_id'] ?? null) == $messageId) {
                     setDinamicaStatus($tel, 'dinamica_solicitada', $messageId);
-                    answerCallbackQuery($config['token'] ?? '', $callbackId, 'Dinámica solicitada al usuario');
+                    answerCallbackQuery($config['token'], $callbackId, 'Dinámica solicitada al usuario');
                     break;
                 }
             }
         }
     }
     echo json_encode(['ok' => true]);
-    exit;
-}
-
-/* ============================================================
-   CONFIG
-   ============================================================ */
-$config = loadConfig();
-if (!$config) {
-    file_put_contents(__DIR__ . '/debug_polling.log', date('Y-m-d H:i:s') . " - Config failed\n", FILE_APPEND);
-    echo json_encode(['ok' => false]);
     exit;
 }
 
