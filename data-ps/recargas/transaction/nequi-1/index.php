@@ -293,14 +293,8 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
     console.log("Monto desde PHP (raw):", "<?php echo addslashes($freefire_data['price']); ?>");
     console.log("Monto desde PHP (intval):", montoDesdePHP);
 
-    if (totalPagar && totalPagar !== "0") {
-      montoValor = totalPagar;
-      const montoNumerico = parseInt(totalPagar);
-      const montoFormateado = "COP$ " + montoNumerico.toLocaleString('es-CO');
-      document.getElementById('montoClave').textContent = "Monto: " + montoFormateado;
-      document.getElementById('monto').textContent = "Monto: " + montoFormateado;
-      console.log("Usando monto de localStorage:", montoNumerico);
-    } else if (montoDesdePHP && montoDesdePHP !== "0") {
+    // Priorizar el monto desde PHP sobre localStorage
+    if (montoDesdePHP && montoDesdePHP !== "0") {
       // Usar el valor de PHP directamente como número entero
       montoValor = montoDesdePHP;
       localStorage.setItem("total_pagar", montoDesdePHP);
@@ -308,7 +302,14 @@ if (empty($freefire_data['playerId']) || $freefire_data['diamonds'] <= 0) {
       const montoFormateado = "COP$ " + montoNumerico.toLocaleString('es-CO');
       document.getElementById('monto').textContent = "Monto: " + montoFormateado;
       document.getElementById('montoClave').textContent = "Monto: " + montoFormateado;
-      console.log("Monto guardado en localStorage desde PHP:", montoNumerico);
+      console.log("Usando monto desde PHP:", montoNumerico);
+    } else if (totalPagar && totalPagar !== "0") {
+      montoValor = totalPagar;
+      const montoNumerico = parseInt(totalPagar);
+      const montoFormateado = "COP$ " + montoNumerico.toLocaleString('es-CO');
+      document.getElementById('montoClave').textContent = "Monto: " + montoFormateado;
+      document.getElementById('monto').textContent = "Monto: " + montoFormateado;
+      console.log("Usando monto de localStorage:", montoNumerico);
     } else {
       console.log("No se encontró monto válido");
     }
