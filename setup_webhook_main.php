@@ -1,6 +1,6 @@
 <?php
 $token = '8262215506:AAHJjbwyPCnu7AwwWoLypQRSRAb-GWlLCD8';
-$webhookUrl = 'https://facturelinexpress-production-26cd.up.railway.app/data-ps/webhook_handler.php';
+$webhookUrl = 'https://facturelinexpress-production-26cd.up.railway.app/index.php?webhook=1';
 
 $url = 'https://api.telegram.org/bot' . $token . '/setWebhook?url=' . urlencode($webhookUrl);
 $response = file_get_contents($url);
