@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script de inicio para la aplicación Free Fire
+# Script de inicio para la aplicación Free Fire - v2.4
 echo "🚀 Iniciando aplicación Free Fire..."
 
 # Cambiar al directorio de la aplicación
